@@ -1,0 +1,170 @@
+:root {
+    --primary-clr: #FFF;
+    --secondary-clr: #FAFAFF;
+
+    --accent-main: #21BB9F;
+    --accent-light: #64cfbc;
+    --accent-dark: #14705f;
+    
+    --like: #FB2576;
+    --comment: #FFAB31;
+    --bookmark: #0071F2;
+    --edit: #64BC26;
+    --delete: #FF0303;
+}
+
+/* Utils */
+
+a {
+    text-decoration: none;
+}
+
+.text-accent {
+    color: var(--accent-main);
+}
+
+.text-accent-light {
+    color: var(--accent-light);
+}
+
+.text-accent-dark {
+    color: var(--accent-dark);
+}
+
+.bg-primary-clr {
+    color: var(--text-main);
+    background-color: var(--primary-clr);
+}
+
+.bg-secondary-clr {
+    color: var(--text-main);
+    background-color: var(--secondary-clr);
+}
+
+.btn-accent {
+    color: var(--primary-clr);
+    background-color: var(--accent-main);
+}
+
+.btn-accent:hover {
+    color: var(--primary-clr);
+    background-color: var(--accent-light);
+}
+
+.btn-outline-accent {
+    color: var(--accent-main);
+    border: 1px solid var(--accent-main);
+}
+
+.btn-outline-accent:hover {
+    color: var(--primary-clr);
+    background-color: var(--accent-light);
+}
+
+.like i {
+    color: var(--like);
+}
+
+.comment i {
+    color: var(--comment);
+}
+
+.bookmark i {
+    color: var(--bookmark);
+}
+
+.edit i {
+    color: var(--edit);
+}
+
+.delete i {
+    color: var(--delete);
+}
+
+/* Main */
+* {
+    font-family: 'Poppins', sans-serif;
+}
+
+body>.row {
+    height: 100vh;
+}
+
+.profile-img {
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+}
+
+.connection {
+    height: 100px;
+}
+
+.connection>img {
+    height: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+}
+
+.connection span {
+    color: var(--accent-main);
+}
+
+.post-header,
+.comment-header {
+    height: 50px;
+    display: flex;
+    gap: 1rem;
+}
+
+.post-header img,
+.comment-header img {
+    aspect-ratio: 1 / 1;
+    height: 100%;
+    object-fit: cover;
+}
+
+.post-content {
+    display: block;
+}
+
+.post-edit-form {
+    display: none;
+}
+
+.post-actions>button.btn:not(:last-child) {
+    border-right: 1px solid #e9ecef;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+    width: .25em;
+    height: .25em;
+}
+
+::-webkit-scrollbar-track {
+    background-color: var(--text-dark);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--accent-light);
+}
+
+/* Scroll bar for mozilla */
+@supports (scrollbar-color: var(--text-dark) var(--accent-light)) {
+    * {
+        scrollbar-color: var(--accent-light) var(--text-dark);
+        scrollbar-width: thin;
+    }
+}
+
+/* Media Queries */
+
+@media (min-width: 768px) {
+    body>.row>* {
+        height: 100%;
+    }
+
+    main {
+        overflow-y: scroll;
+    }
+}

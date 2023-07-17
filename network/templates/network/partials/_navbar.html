@@ -1,0 +1,80 @@
+{% load static %}
+
+<nav class="col-lg-2 col-md-3 col-12 p-0 bg-primary-clr d-none d-md-flex flex-md-column">
+    <h2 class="m-4"><a class="text-accent" href="{% url 'index' %}">Qwitter</a></h2>
+
+    <div>
+        <ul class="navbar-nav mx-4">
+            <li class="nav-item">
+                <a class="nav-link fs-5" href="{% url 'index' %}">All Posts</a>
+            </li>
+            {% if user.is_authenticated %}
+            <li class="nav-item">
+                <a class="nav-link fs-5" href="{% url 'following' %}">Following</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link fs-5" href="{% url 'bookmarks' %}">Bookmarks</a>
+            </li>
+            <li class="nav-item d-lg-none">
+                <a class="nav-link fs-5" href="{% url 'newpost' %}">New Post</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link fs-5" href="{% url 'logout' %}">Log Out</a>
+            </li>
+            {% else %}
+            <li class="nav-item">
+                <a class="nav-link fs-5" href="{% url 'login' %}">Log In</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link fs-5" href="{% url 'register' %}">Register</a>
+            </li>
+            {% endif %}
+        </ul>
+    </div>
+
+    <div class="mt-auto px-4 py-3 border-top">
+        {% if user.is_authenticated %}
+        <a class="text-accent-dark fs-5" href="{% url 'profile' user %}">
+            <img class="profile-img rounded-circle" src="{{ user.profile.image }}" alt="{{ user }}"
+                style="height: 40px;"> <strong>{{ user }}</strong>
+        </a>
+        {% else %}
+        <a class="text-accent-dark fs-5" href="{% url 'login' %}">
+            <i class="far fa-user-circle"></i> <strong>Guest</strong>
+        </a>
+        {% endif %}
+    </div>
+</nav>
+
+<nav class="bg-primary-clr sticky-top shadow-sm d-flex d-md-none align-items-center gap-3 px-4 py-3">
+    <h2 class="m-0"><a class="text-accent" href="{% url 'index' %}">Qwitter</a></h2>
+    <div class="ms-auto">
+        {% if user.is_authenticated %}
+        <a class="text-accent-dark fs-5" href="{% url 'profile' user %}">
+            <img class="profile-img rounded-circle" src="{{ user.profile.image }}" alt="{{ user }}"
+                style="height: 30px;"> <strong class="fw-medium">{{ user }}</strong>
+        </a>
+        {% else %}
+        <a class="text-accent-dark fs-5" href="{% url 'login' %}">
+            <i class="far fa-user-circle"></i> <strong class="fw-medium">Guest</strong>
+        </a>
+        {% endif %}
+    </div>
+    <div class="dropdown">
+        <button class="btn p-0 text-accent" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fas fa-bars fa-lg"></i>
+        </button>
+        <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="{% url 'index' %}">All Posts</a></li>
+            {% if user.is_authenticated %}
+            <li><a class="dropdown-item" href="{% url 'following' %}">Following</a></li>
+            <li><a class="dropdown-item" href="{% url 'bookmarks' %}">Bookmarks</a></li>
+            <li><a class="dropdown-item" href="{% url 'newpost' %}">New Post</a></li>
+            <li><a class="dropdown-item" href="{% url 'logout' %}">Log Out</a></li>
+            {% else %}
+            <li><a class="dropdown-item" href="{% url 'login' %}">Log In</a></li>
+            <li><a class="dropdown-item" href="{% url 'register' %}">Register</a></li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>

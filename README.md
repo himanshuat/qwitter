@@ -1,1 +1,1 @@
-# qwitter
+# Qwitter - A Twitter Clone
