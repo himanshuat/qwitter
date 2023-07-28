@@ -16,8 +16,8 @@
         <p class="text-secondary fs-4 fw-semibold">Account</p>
         {% if user.is_authenticated %}
         <div class="d-flex gap-3 flex-column">
-            <a class="text-info" href="">Change Password</a>
-            <a class="text-danger" href="">Delete Account</a>
+            <a class="text-info" href="{% url 'change-password' %}">Change Password</a>
+            <a class="text-danger" href="{% url 'delete-account' %}">Delete Account</a>
         </div>
         {% else %}
         <p class="m-1"><a href="{% url 'login' %}">Login</a> to access account settings</p>

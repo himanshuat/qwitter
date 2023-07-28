@@ -365,3 +365,38 @@ def bookmark(request, post_id):
 
 def settings(request):
     return render(request, "network/settings.html")
+
+
+@login_required(login_url="login")
+@user_passes_test(profile_check, login_url="update_profile", redirect_field_name=None)
+def change_password(request):
+    if request.method == "GET":
+        return render(request, "network/change-password.html")
+    
+    post = request.POST
+    if not request.user.check_password(post["old-password"]):
+        return render(request, "network/change-password.html", {
+            "message": "Incorrect old password"
+        })
+    
+    request.user.set_password(post["new-password"])
+    request.user.save()
+    return redirect("logout")
+
+
+@login_required(login_url="login")
+@user_passes_test(profile_check, login_url="update_profile", redirect_field_name=None)
+def delete_account(request):
+    if request.method == "GET":
+        return render(request, "network/delete-account.html")
+    
+    post = request.POST
+    if not request.user.check_password(post["password"]):
+        return render(request, "network/delete-account.html", {
+            "message": "Incorrect password"
+        })
+    
+    user = request.user
+    user.delete()
+    return redirect("index")
+    

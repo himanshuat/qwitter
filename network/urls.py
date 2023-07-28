@@ -19,5 +19,7 @@ urlpatterns = [
     path("posts/<int:post_id>/delete", views.deletepost, name="deletepost"),
     path("bookmarks", views.bookmarks, name="bookmarks"),
     path("posts/<int:post_id>/bookmark", views.bookmark, name="bookmark"),
-    path("settings", views.settings, name="settings")
+    path("settings", views.settings, name="settings"),
+    path("settings/change-password", views.change_password, name="change-password"),
+    path("settings/delete-account", views.delete_account, name="delete-account"),
 ]
