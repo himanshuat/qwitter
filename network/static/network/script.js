@@ -1,3 +1,5 @@
+const themeToggler = document.getElementById('theme-toggler')
+
 // Initialize theme
 if (localStorage.getItem("theme") === null) {
     localStorage.setItem("theme", "light")
@@ -14,11 +16,12 @@ else {
 
 document.body.dataset.bsTheme = localStorage.getItem("theme")
 
-// Event Listeners
-document.querySelectorAll('.theme-toggler').forEach(item => {
-    item.addEventListener('click', toggleTheme)
-})
+if (themeToggler) {
+    themeToggler.value = localStorage.getItem("theme")
+    themeToggler.addEventListener("change", toggleTheme)
+}
 
+// Event Listeners
 document.querySelectorAll("button.connect").forEach(btn => {
     btn.addEventListener("click", (e) => {
         connect(e.target.dataset.username)

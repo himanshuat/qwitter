@@ -361,3 +361,7 @@ def bookmark(request, post_id):
             "status": "201",
             "action": "Bookmarked"
         })
+    
+
+def settings(request):
+    return render(request, "network/settings.html")

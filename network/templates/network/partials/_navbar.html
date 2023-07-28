@@ -19,9 +19,15 @@
                 <a class="nav-link fs-5" href="{% url 'newpost' %}">New Post</a>
             </li>
             <li class="nav-item">
+                <a class="nav-link fs-5" href="{% url 'settings' %}">Settings</a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link fs-5" href="{% url 'logout' %}">Log Out</a>
             </li>
             {% else %}
+            <li class="nav-item">
+                <a class="nav-link fs-5" href="{% url 'settings' %}">Settings</a>
+            </li>
             <li class="nav-item">
                 <a class="nav-link fs-5" href="{% url 'login' %}">Log In</a>
             </li>
@@ -29,7 +35,6 @@
                 <a class="nav-link fs-5" href="{% url 'register' %}">Register</a>
             </li>
             {% endif %}
-            <li class="nav-item fs-5 mt-3 theme-toggler">Switch Theme</li>
         </ul>
     </div>
 
@@ -71,12 +76,13 @@
             <li><a class="dropdown-item" href="{% url 'following' %}">Following</a></li>
             <li><a class="dropdown-item" href="{% url 'bookmarks' %}">Bookmarks</a></li>
             <li><a class="dropdown-item" href="{% url 'newpost' %}">New Post</a></li>
+            <li><a class="dropdown-item" href="{% url 'settings' %}">Settings</a></li>
             <li><a class="dropdown-item" href="{% url 'logout' %}">Log Out</a></li>
             {% else %}
+            <li><a class="dropdown-item" href="{% url 'settings' %}">Settings</a></li>
             <li><a class="dropdown-item" href="{% url 'login' %}">Log In</a></li>
             <li><a class="dropdown-item" href="{% url 'register' %}">Register</a></li>
             {% endif %}
-            <li class="dropdown-item theme-toggler">Switch Theme</li>
         </ul>
     </div>
 </nav>

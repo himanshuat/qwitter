@@ -19,4 +19,5 @@ urlpatterns = [
     path("posts/<int:post_id>/delete", views.deletepost, name="deletepost"),
     path("bookmarks", views.bookmarks, name="bookmarks"),
     path("posts/<int:post_id>/bookmark", views.bookmark, name="bookmark"),
+    path("settings", views.settings, name="settings")
 ]
