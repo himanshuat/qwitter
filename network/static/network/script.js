@@ -1,3 +1,24 @@
+// Initialize theme
+if (localStorage.getItem("theme") === null) {
+    localStorage.setItem("theme", "light")
+}
+
+if (localStorage.getItem("theme") === "light") {
+    document.body.classList.remove("dark")
+    document.body.classList.add("light")
+}
+else {
+    document.body.classList.remove("light")
+    document.body.classList.add("dark")
+}
+
+document.body.dataset.bsTheme = localStorage.getItem("theme")
+
+// Event Listeners
+document.querySelectorAll('.theme-toggler').forEach(item => {
+    item.addEventListener('click', toggleTheme)
+})
+
 document.querySelectorAll("button.connect").forEach(btn => {
     btn.addEventListener("click", (e) => {
         connect(e.target.dataset.username)
@@ -45,6 +66,22 @@ document.querySelectorAll("button.delete").forEach(btn => {
         deletePost(btn)
     })
 })
+
+// Functions
+function toggleTheme() {
+    if (localStorage.getItem("theme") === "light") {
+        localStorage.setItem("theme", "dark")
+        document.body.classList.remove("light")
+        document.body.classList.add("dark")
+    }
+    else {
+        localStorage.setItem("theme", "light")
+        document.body.classList.remove("dark")
+        document.body.classList.add("light")
+    }
+
+    document.body.dataset.bsTheme = localStorage.getItem("theme")
+}
 
 function connect(username) {
     fetch(`/profile/${username}/connect`, { method: 'POST' })

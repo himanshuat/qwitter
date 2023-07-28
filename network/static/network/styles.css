@@ -1,7 +1,4 @@
 :root {
-    --primary-clr: #FFF;
-    --secondary-clr: #FAFAFF;
-
     --accent-main: #21BB9F;
     --accent-light: #64cfbc;
     --accent-dark: #14705f;
@@ -11,6 +8,16 @@
     --bookmark: #0071F2;
     --edit: #64BC26;
     --delete: #FF0303;
+}
+
+.light {
+    --primary-clr: #FFF;
+    --secondary-clr: #FAFAFF;
+}
+
+.dark {
+    --primary-clr: #111;
+    --secondary-clr: #232323;
 }
 
 /* Utils */

@@ -6,7 +6,7 @@
 <section class="container p-4">
     <div class="bg-primary-clr p-3 rounded">
         {% include "network/partials/_postheader.html" %}
-        <p class="post-content text-dark bg-secondary-clr mt-3 p-3 rounded-2">{{ post.content }}</p>
+        <p class="post-content bg-secondary-clr mt-3 p-3 rounded-2">{{ post.content }}</p>
         {% if user == post.user %}
         <form data-postid="{{ post.pk }}" class="post-edit-form my-3">
             <div class="form-floating">
