@@ -5,38 +5,38 @@
 
     <div>
         <ul class="navbar-nav mx-4">
-            <li class="nav-item {% if app_url == '/' %} active {% endif %}">
+            <li class="nav-item {% if request.resolver_match.url_name == 'index' %}active{% endif %}">
                 <a class="nav-link fs-5 d-flex align-items-center gap-2" href="{% url 'index' %}"><i data-feather="home"></i> Home</a>
             </li>
             {% if user.is_staff %}
-            <li class="nav-item">
+            <li class="nav-item {% if request.resolver_match.url_name == 'admin:index' %}active{% endif %}">
                 <a class="nav-link fs-5 d-flex align-items-center gap-2" href="{% url 'admin:index' %}"><i data-feather="zap"></i> Admin</a>
             </li>
             {% endif %}
             {% if user.is_authenticated %}
-            <li class="nav-item">
+            <li class="nav-item {% if request.resolver_match.url_name == 'following' %}active{% endif %}">
                 <a class="nav-link fs-5 d-flex align-items-center gap-2" href="{% url 'following' %}"><i data-feather="users"></i> Following</a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item {% if request.resolver_match.url_name == 'bookmarks' %}active{% endif %}">
                 <a class="nav-link fs-5 d-flex align-items-center gap-2" href="{% url 'bookmarks' %}"><i data-feather="bookmark"></i> Bookmarks</a>
             </li>
-            <li class="nav-item d-lg-none">
+            <li class="nav-item d-lg-none {% if request.resolver_match.url_name == 'newpost' %}active{% endif %}">
                 <a class="nav-link fs-5 d-flex align-items-center gap-2" href="{% url 'newpost' %}"><i data-feather="plus-square"></i> New Post</a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item {% if request.resolver_match.url_name == 'settings' %}active{% endif %}">
                 <a class="nav-link fs-5 d-flex align-items-center gap-2" href="{% url 'settings' %}"><i data-feather="settings"></i> Settings</a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item {% if request.resolver_match.url_name == 'logout' %}active{% endif %}">
                 <a class="nav-link fs-5 d-flex align-items-center gap-2" href="{% url 'logout' %}"><i data-feather="log-out"></i> Log Out</a>
             </li>
             {% else %}
-            <li class="nav-item">
+            <li class="nav-item {% if request.resolver_match.url_name == 'settings' %}active{% endif %}">
                 <a class="nav-link fs-5 d-flex align-items-center gap-2" href="{% url 'settings' %}"><i data-feather="settings"></i> Settings</a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item {% if request.resolver_match.url_name == 'login' %}active{% endif %}">
                 <a class="nav-link fs-5 d-flex align-items-center gap-2" href="{% url 'login' %}"><i data-feather="log-in"></i> Log In</a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item {% if request.resolver_match.url_name == 'register' %}active{% endif %}">
                 <a class="nav-link fs-5 d-flex align-items-center gap-2" href="{% url 'register' %}"><i data-feather="user-plus"></i> Register</a>
             </li>
             {% endif %}

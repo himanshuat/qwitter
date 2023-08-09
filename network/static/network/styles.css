@@ -97,6 +97,10 @@ body>.row {
     height: 100vh;
 }
 
+.nav-item.active {
+    color: var(--accent-main);
+}
+
 .profile-img {
     aspect-ratio: 1 / 1;
     object-fit: cover;
