@@ -42,7 +42,7 @@ document.querySelectorAll("button.bookmark").forEach(btn => {
 
 document.querySelectorAll("button.edit").forEach(btn => {
     btn.addEventListener("click", () => {
-        const postEl = btn.parentElement.parentElement
+        const postEl = btn.parentElement.parentElement.parentElement
         const postContent = postEl.querySelector(".post-content")
         const postEditForm = postEl.querySelector(".post-edit-form")
 
