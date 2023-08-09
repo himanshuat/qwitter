@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
-import json
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -21,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = json.loads(os.environ['SECRET_KEY'])
+SECRET_KEY = '13kl@xtukpwe&xj2xoysxe9_6=tf@f8ewxer5n&ifnd46+6$%8'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -78,11 +77,11 @@ WSGI_APPLICATION = 'qwitter.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': json.loads(os.environ['DB_NAME']),
-        'USER': json.loads(os.environ['DB_USER']),
-        'PASSWORD': json.loads(os.environ['DB_PASSWORD']),
-        'HOST': json.loads(os.environ['DB_HOST']),
-        'PORT': json.loads(os.environ['DB_PORT']),
+        'NAME': 'railway',
+        'USER': 'postgres',
+        'PASSWORD': 'R5RdBTeo6jawQxdNhFAu',
+        'HOST': 'containers-us-west-167.railway.app',
+        'PORT': '7521',
     }
 }
 
