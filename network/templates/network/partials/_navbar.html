@@ -8,6 +8,11 @@
             <li class="nav-item {% if app_url == '/' %} active {% endif %}">
                 <a class="nav-link fs-5 d-flex align-items-center gap-2" href="{% url 'index' %}"><i data-feather="home"></i> Home</a>
             </li>
+            {% if user.is_staff %}
+            <li class="nav-item">
+                <a class="nav-link fs-5 d-flex align-items-center gap-2" href="{% url 'admin:index' %}"><i data-feather="zap"></i> Admin</a>
+            </li>
+            {% endif %}
             {% if user.is_authenticated %}
             <li class="nav-item">
                 <a class="nav-link fs-5 d-flex align-items-center gap-2" href="{% url 'following' %}"><i data-feather="users"></i> Following</a>
@@ -72,6 +77,9 @@
         </button>
         <ul class="dropdown-menu">
             <li><a class="dropdown-item" href="{% url 'index' %}">Home</a></li>
+            {% if user.is_staff %}
+            <li><a class="dropdown-item" href="{% url 'admin:index' %}">Following</a></li>
+            {% endif %}
             {% if user.is_authenticated %}
             <li><a class="dropdown-item" href="{% url 'following' %}">Following</a></li>
             <li><a class="dropdown-item" href="{% url 'bookmarks' %}">Bookmarks</a></li>
