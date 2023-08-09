@@ -21,7 +21,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = json.loads(os.getenv('SECRET_KEY'))
+SECRET_KEY = json.loads(os.environ['SECRET_KEY'])
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -78,11 +78,11 @@ WSGI_APPLICATION = 'qwitter.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': json.loads(os.getenv('DB_NAME')),
-        'USER': json.loads(os.getenv('DB_USER')),
-        'PASSWORD': json.loads(os.getenv('DB_PASSWORD')),
-        'HOST': json.loads(os.getenv('DB_HOST')),
-        'PORT': json.loads(os.getenv('DB_PORT')),
+        'NAME': json.loads(os.environ['DB_NAME']),
+        'USER': json.loads(os.environ['DB_USER']),
+        'PASSWORD': json.loads(os.environ['DB_PASSWORD']),
+        'HOST': json.loads(os.environ['DB_HOST']),
+        'PORT': json.loads(os.environ['DB_PORT']),
     }
 }
 
