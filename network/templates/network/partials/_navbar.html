@@ -78,7 +78,7 @@
         <ul class="dropdown-menu">
             <li><a class="dropdown-item" href="{% url 'index' %}">Home</a></li>
             {% if user.is_staff %}
-            <li><a class="dropdown-item" href="{% url 'admin:index' %}">Following</a></li>
+            <li><a class="dropdown-item" href="{% url 'admin:index' %}">Admin</a></li>
             {% endif %}
             {% if user.is_authenticated %}
             <li><a class="dropdown-item" href="{% url 'following' %}">Following</a></li>
