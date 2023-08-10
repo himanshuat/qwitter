@@ -2,6 +2,15 @@
 
 A social networking platform with elegant designs where end-users can share text based posts with the world. 
 
+## Contents
+- [Demo](#demo)
+- [Tech Stak](#tech-stack)
+- [Features](#features)
+- [Future Development](#future-development)
+
+## Demo
+<iframe width="560" height="315" src="https://www.youtube.com/embed/_W3SFdjb-Lg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
 ## Tech Stack
 - Django
 - HTML
@@ -22,6 +31,7 @@ A social networking platform with elegant designs where end-users can share text
 **Network**
 - Follow/Unfollow
 - View profile
+- View followers/following
 
 **Posts**
 - Create post
@@ -32,12 +42,14 @@ A social networking platform with elegant designs where end-users can share text
 
 **User Interface(UI)**
 - Light/Dark theme
+- System Default theme
 - Switch theme
 - Responsive design
 - Pagination
 
 ## Future Development
-- Tags
-- Lists
-- Search
-- Communities
+- [x] System Default theme
+- [ ] Tags
+- [ ]Lists
+- [ ] Search
+- [ ] Communities
