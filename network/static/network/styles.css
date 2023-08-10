@@ -10,12 +10,12 @@
     --delete: #FF0303;
 }
 
-.light {
+body[data-bs-theme="light"] {
     --primary-clr: #FFF;
     --secondary-clr: #FAFAFF;
 }
 
-.dark {
+body[data-bs-theme="dark"] {
     --primary-clr: #111;
     --secondary-clr: #232323;
 }

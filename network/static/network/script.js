@@ -2,23 +2,17 @@ const themeToggler = document.getElementById('theme-toggler')
 
 // Initialize theme
 if (localStorage.getItem("theme") === null) {
-    localStorage.setItem("theme", "light")
+    localStorage.setItem("theme", "auto")
 }
 
-if (localStorage.getItem("theme") === "light") {
-    document.body.classList.remove("dark")
-    document.body.classList.add("light")
-}
-else {
-    document.body.classList.remove("light")
-    document.body.classList.add("dark")
-}
-
-document.body.dataset.bsTheme = localStorage.getItem("theme")
+setTheme()
 
 if (themeToggler) {
     themeToggler.value = localStorage.getItem("theme")
-    themeToggler.addEventListener("change", toggleTheme)
+    themeToggler.addEventListener("change", () => {
+        localStorage.setItem("theme", themeToggler.value)
+        setTheme()
+    })
 }
 
 // Event Listeners
@@ -71,19 +65,16 @@ document.querySelectorAll("button.delete").forEach(btn => {
 })
 
 // Functions
-function toggleTheme() {
+function setTheme() {
     if (localStorage.getItem("theme") === "light") {
-        localStorage.setItem("theme", "dark")
-        document.body.classList.remove("light")
-        document.body.classList.add("dark")
+        document.body.dataset.bsTheme = "light"
+    }
+    else if (localStorage.getItem("theme") === "dark") {
+        document.body.dataset.bsTheme = "dark"
     }
     else {
-        localStorage.setItem("theme", "light")
-        document.body.classList.remove("dark")
-        document.body.classList.add("light")
+        document.body.dataset.bsTheme = window.matchMedia('(prefers-color-scheme: light)').matches ? "light" : "dark"
     }
-
-    document.body.dataset.bsTheme = localStorage.getItem("theme")
 }
 
 function connect(username) {
