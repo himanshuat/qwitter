@@ -3,9 +3,8 @@
 {% block title %} {{ profile.user }} {% endblock %}
 
 {% block body %}
-<section class="container">
-    <div class="p-4">
-        <div class="row p-3 rounded bg-primary-clr">
+<section class="container p-3">
+        <div class="row p-3 m-0 rounded bg-primary-clr">
             <img class="col-lg-3 col-md-4 col-8 mx-auto p-2 img-thumbnail profile-img" src="{{ profile.image }}"
                 alt="{{ profile.user }}">
             <div class="col-lg-9 col-md-8 col-12 mt-md-0 mt-3 d-flex flex-column">
@@ -13,10 +12,10 @@
                 <a class="text-accent fs-5" href="{% url 'profile' profile.user %}">@{{ profile.user }}</a>
                 <p class="text-secondary fw-medium d-flex flex-md-column justify-content-between gap-1 my-2">
                     <small>
-                        <i class="fas fa-birthday-cake"></i> Joined {{ profile.user.date_joined|date:"F d, Y" }}
+                        <i class="fas fa-birthday-cake"></i> Born {{ profile.dob|date:"M d, Y" }}
                     </small>
                     <small>
-                        <i class="fas fa-calendar-alt"></i> Born {{ profile.dob|date:"F d, Y" }}
+                        <i class="fas fa-calendar-alt"></i> Joined {{ profile.user.date_joined|date:"M d, Y" }}
                     </small>
                 </p>
                 <div class="my-2">
@@ -106,8 +105,7 @@
 
         </div>
 
-        <h3 class="text-primary-emphasis mt-4">Posts</h3>
+        <h3 class="text-primary-emphasis mt-3">Posts</h3>
         {% include 'network/partials/_posts.html' %}
-    </div>
 </section>
 {% endblock %}

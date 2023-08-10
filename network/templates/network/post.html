@@ -3,7 +3,7 @@
 {% block title %}Post: {{ post.pk }}{% endblock %}
 
 {% block body %}
-<section class="container p-4">
+<section class="container px-3 py-4">
     <div class="bg-primary-clr p-3 rounded">
         {% include "network/partials/_postheader.html" %}
         <p class="post-content bg-secondary-clr mt-3 p-3 rounded-2">{{ post.content }}</p>
@@ -23,7 +23,7 @@
     </div>
     
     <div>
-        <h4 class="text-primary-emphasis my-2">Comments</h4>
+        <h4 class="text-primary-emphasis mt-3">Comments</h4>
         {% include 'network/partials/_comments.html' %}
     </div>
 </section>
