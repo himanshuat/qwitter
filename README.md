@@ -3,13 +3,9 @@
 A social networking platform with elegant designs where end-users can share text based posts with the world. 
 
 ## Contents
-- [Demo](#demo)
 - [Tech Stak](#tech-stack)
 - [Features](#features)
 - [Future Development](#future-development)
-
-## Demo
-<iframe width="560" height="315" src="https://www.youtube.com/embed/_W3SFdjb-Lg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
 ## Tech Stack
 - Django
@@ -50,6 +46,6 @@ A social networking platform with elegant designs where end-users can share text
 ## Future Development
 - [x] System Default theme
 - [ ] Tags
-- [ ]Lists
+- [ ] Lists
 - [ ] Search
 - [ ] Communities
