@@ -148,7 +148,7 @@ body>.row {
 
 /* Scrollbar */
 ::-webkit-scrollbar {
-    width: .25em;
+    width: .35em;
     height: .25em;
 }
 
@@ -164,7 +164,7 @@ body>.row {
 @supports (scrollbar-color: var(--text-dark) var(--accent-light)) {
     * {
         scrollbar-color: var(--accent-light) var(--text-dark);
-        scrollbar-width: thin;
+        /* scrollbar-width: thin; */
     }
 }
 
