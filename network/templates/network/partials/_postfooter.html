@@ -20,14 +20,6 @@
             <i class="far fa-bookmark"></i>
             {% endif %}
         </button>
-        {% if user == post.user %}
-        <button data-postid="{{ post.pk }}" class="edit btn btn-sm flex-grow-1 rounded-0">
-            <i class="far fa-edit"></i>
-        </button>
-        <button data-postid="{{ post.pk }}" class="delete btn btn-sm flex-grow-1 rounded-0">
-            <i class="far fa-trash-alt"></i>
-        </button>
-        {% endif %}
     </div>
 
     <div class="modal fade" id="post{{ post.pk }}commentform" tabindex="-1"

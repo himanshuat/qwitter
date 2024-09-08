@@ -17,6 +17,7 @@ urlpatterns = [
     path("posts/<int:post_id>/react", views.react, name="react"),
     path("posts/<int:post_id>/edit", views.editpost, name="editpost"),
     path("posts/<int:post_id>/delete", views.deletepost, name="deletepost"),
+    path("posts/<int:post_id>/pin", views.pinpost, name="pinpost"),
     path("bookmarks", views.bookmarks, name="bookmarks"),
     path("posts/<int:post_id>/bookmark", views.bookmark, name="bookmark"),
     path("settings", views.settings, name="settings"),

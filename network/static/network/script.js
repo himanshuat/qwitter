@@ -36,7 +36,8 @@ document.querySelectorAll("button.bookmark").forEach(btn => {
 
 document.querySelectorAll("button.edit").forEach(btn => {
     btn.addEventListener("click", () => {
-        const postEl = btn.parentElement.parentElement.parentElement
+        const postId = btn.dataset.postid;
+        const postEl = document.querySelector(`div.post[data-postid="${postId}"]`)
         const postContent = postEl.querySelector(".post-content")
         const postEditForm = postEl.querySelector(".post-edit-form")
 
@@ -61,6 +62,12 @@ document.querySelectorAll(".post-edit-form").forEach(form => {
 document.querySelectorAll("button.delete").forEach(btn => {
     btn.addEventListener("click", () => {
         deletePost(btn)
+    })
+})
+
+document.querySelectorAll("button.pin").forEach(btn => {
+    btn.addEventListener("click", () => {
+        pinPost(btn)
     })
 })
 
@@ -179,6 +186,23 @@ function deletePost(btn) {
                 else {
                     location.reload()
                 }
+            }
+            else {
+                alert(data.response)
+            }
+        })
+}
+
+function pinPost(btn) {
+    const postId = btn.dataset.postid
+    fetch(`/posts/${postId}/pin`, { method: "POST" })
+        .then(res => res.json())
+        .then(data => {
+            if (data.status === "401") {
+                window.location.href = window.location.origin + "/login"
+            }
+            else if (data.status == "201") {
+                window.location.href = window.location.origin + "/profile/" + data.username
             }
             else {
                 alert(data.response)

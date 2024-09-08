@@ -8,6 +8,7 @@
     --bookmark: #0071F2;
     --edit: #64BC26;
     --delete: #FF0303;
+    --pin: #8B008B;
 }
 
 body[data-bs-theme="light"] {
@@ -88,6 +89,10 @@ a {
     color: var(--delete);
 }
 
+.pin i {
+    color: var(--pin);
+}
+
 /* Main */
 * {
     font-family: 'Poppins', sans-serif;
@@ -120,6 +125,11 @@ body>.row {
     color: var(--accent-main);
 }
 
+.post-pinned {
+    font-size: .8rem;
+    padding-left: .5rem;
+}
+
 .post-header,
 .comment-header {
     height: 50px;
@@ -132,6 +142,10 @@ body>.row {
     aspect-ratio: 1 / 1;
     height: 100%;
     object-fit: cover;
+}
+
+.post-actions i {
+    width: 1.25rem;
 }
 
 .post-content {

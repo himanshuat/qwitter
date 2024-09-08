@@ -65,6 +65,7 @@ class Post(models.Model):
     user = models.ForeignKey(User, related_name="posts", on_delete=models.CASCADE, blank=False, null=False)
     content = models.TextField(blank=False, null=False)
     date = models.DateTimeField(auto_now_add=True)
+    ispinned = models.BooleanField(default=False)
 
     @property
     def reactions_count(self):

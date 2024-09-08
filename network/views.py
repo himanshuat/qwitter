@@ -113,7 +113,7 @@ def profile(request, username):
     except User.DoesNotExist or Profile.DoesNotExist:
         return HttpResponse(f"<h3>Either {username} does not exist or has not created profile</h3>")
     
-    posts = user.posts.all().order_by("-date")
+    posts = user.posts.all().order_by("-ispinned", "-date")
     paginator = Paginator(posts, 10)
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
@@ -362,6 +362,48 @@ def bookmark(request, post_id):
             "action": "Bookmarked"
         })
     
+@user_passes_test(profile_check, login_url="update_profile", redirect_field_name=None)
+@require_POST
+@csrf_exempt
+def pinpost(request, post_id):
+    if not request.user.is_authenticated:
+        return JsonResponse({
+            "status": "401",
+            "response": "Log in to perform this action"
+        })
+    
+    try:
+        post = Post.objects.get(pk=post_id)
+    except Post.DoesNotExist:
+        return JsonResponse({
+            "status": "404",
+            "response": "The post you are trying to access, doesn't exist",
+            "postId": post_id
+        })
+    
+    if post.user != request.user:
+        return JsonResponse({
+            "status": "403",
+            "response": "Forbidden, you do not have access to edit the post you have requested",
+            "postId": post_id
+        })
+    else:
+        if post.ispinned:
+            post.ispinned = False
+            post.save()
+        else:
+            user_pinned_post = Post.objects.filter(user=post.user, ispinned=True)
+            if len(user_pinned_post) > 0:
+                user_pinned_post[0].ispinned = False
+                user_pinned_post[0].save()
+            post.ispinned = True
+            post.save()
+        return JsonResponse({
+            "status": "201",
+            "post": "Pinned post: " + str(post_id),
+            "username": post.user.username
+        })
+
 
 def settings(request):
     return render(request, "network/settings.html")
