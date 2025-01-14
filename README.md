@@ -46,6 +46,9 @@ A social networking platform with elegant designs where end-users can share text
 ## Future Development
 - [x] System Default theme
 - [x] Pinned Posts
-- [ ] Featured Posts
 - [ ] Search
 - [ ] Communities
+- [ ] API
+- [ ] Qwitter Mobile
+- [ ] Logo
+- [ ] Messaging
