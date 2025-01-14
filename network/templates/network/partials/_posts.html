@@ -4,7 +4,7 @@
     {% for post in posts_page %}
     <div class="post bg-primary-clr p-3 rounded" data-postid="{{ post.pk }}">
         {% include "network/partials/_postheader.html" %}
-        <a class="post-content bg-secondary-clr mt-3 p-3 rounded-2" href="{% url 'post' post.pk %}">
+        <a class="post-content bg-secondary-clr mt-3 p-3 rounded-2" href="{% url 'network:post' post.pk %}">
             {{ post.content }}
         </a>
         {% if user == post.user %}

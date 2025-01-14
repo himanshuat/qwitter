@@ -5,7 +5,7 @@
 {% block body %}
 <section class="container p-4">
     <h2 class="text-primary-emphasis">Update Profile: {{ user }}</h2>
-    <form class="row d-flex flex-column gap-4 py-2" action="{% url 'update_profile' %}" method="post">
+    <form class="row d-flex flex-column gap-4 py-2" action="{% url 'network:update_profile' %}" method="post">
         {% csrf_token %}
         <div class="col-12">
             <label for="name" class="form-label">Name</label>

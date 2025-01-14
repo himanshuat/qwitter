@@ -12,7 +12,7 @@ from django.core.paginator import Paginator
 from .utils import profile_check
 from .models import *
 
-@user_passes_test(profile_check, login_url="update_profile", redirect_field_name=None)
+@user_passes_test(profile_check, login_url="network:update_profile", redirect_field_name=None)
 def index(request):
     posts = Post.objects.all().order_by("-date")
     paginator = Paginator(posts, 10)
@@ -35,7 +35,7 @@ def login_view(request):
         if user is not None:
             login(request, user)
             
-            return HttpResponseRedirect(reverse("index"))
+            return HttpResponseRedirect(reverse("network:index"))
         else:
             return render(request, "network/login.html", {
                 "message": "Invalid username and/or password."
@@ -46,7 +46,7 @@ def login_view(request):
 
 def logout_view(request):
     logout(request)
-    return HttpResponseRedirect(reverse("index"))
+    return HttpResponseRedirect(reverse("network:index"))
 
 
 def register(request):
@@ -71,12 +71,12 @@ def register(request):
                 "message": "Username already taken."
             })
         login(request, user)
-        return HttpResponseRedirect(reverse("index"))
+        return HttpResponseRedirect(reverse("network:index"))
     else:
         return render(request, "network/register.html")
 
 
-@login_required(login_url="login")
+@login_required(login_url="network:login")
 def update_profile(request):
     profile = Profile.objects.filter(user=request.user)
 
@@ -102,10 +102,10 @@ def update_profile(request):
     
     profile.save()
 
-    return redirect("profile", username=request.user)
+    return redirect("network:profile", username=request.user)
 
 
-@user_passes_test(profile_check, login_url="update_profile", redirect_field_name=None)
+@user_passes_test(profile_check, login_url="network:update_profile", redirect_field_name=None)
 def profile(request, username):
     try:
         user = User.objects.get(username=username)
@@ -124,8 +124,8 @@ def profile(request, username):
     })
 
 
-@login_required(login_url="login")
-@user_passes_test(profile_check, login_url="update_profile", redirect_field_name=None)
+@login_required(login_url="network:login")
+@user_passes_test(profile_check, login_url="network:update_profile", redirect_field_name=None)
 def following(request):
     following = request.user.following_list
     posts = Post.objects.filter(user__in=following).order_by("-date")
@@ -138,7 +138,7 @@ def following(request):
     })
 
 
-@user_passes_test(profile_check, login_url="update_profile", redirect_field_name=None)
+@user_passes_test(profile_check, login_url="network:update_profile", redirect_field_name=None)
 def post(request, post_id):
     post = Post.objects.filter(pk=post_id)
     if len(post) == 0:
@@ -150,8 +150,8 @@ def post(request, post_id):
         })
 
 
-@login_required(login_url="login")
-@user_passes_test(profile_check, login_url="update_profile", redirect_field_name=None)
+@login_required(login_url="network:login")
+@user_passes_test(profile_check, login_url="network:update_profile", redirect_field_name=None)
 def newpost(request):
     if request.method == "GET":
         return render(request, "network/newpost.html")
@@ -160,10 +160,10 @@ def newpost(request):
     post = Post(user=request.user, content=content)
     post.save()
     
-    return redirect("post", post_id=post.pk)
+    return redirect("network:post", post_id=post.pk)
 
 
-@user_passes_test(profile_check, login_url="update_profile", redirect_field_name=None)
+@user_passes_test(profile_check, login_url="network:update_profile", redirect_field_name=None)
 @require_POST
 @csrf_exempt
 def editpost(request, post_id):
@@ -198,7 +198,7 @@ def editpost(request, post_id):
         })
 
 
-@user_passes_test(profile_check, login_url="update_profile", redirect_field_name=None)
+@user_passes_test(profile_check, login_url="network:update_profile", redirect_field_name=None)
 @require_POST
 @csrf_exempt
 def deletepost(request, post_id):
@@ -231,9 +231,9 @@ def deletepost(request, post_id):
         })
 
 
-@login_required(login_url="login")
+@login_required(login_url="network:login")
 @require_POST
-@user_passes_test(profile_check, login_url="update_profile", redirect_field_name=None)
+@user_passes_test(profile_check, login_url="network:update_profile", redirect_field_name=None)
 def comment(request, post_id):
     post = Post.objects.get(pk=post_id)
 
@@ -241,7 +241,7 @@ def comment(request, post_id):
     comment = Comment(content=content, post=post, user=request.user)
     comment.save()
 
-    return redirect("post", post_id=post_id)
+    return redirect("network:post", post_id=post_id)
 
 
 @csrf_exempt
@@ -311,8 +311,8 @@ def react(request, post_id):
         })
     
 
-@login_required(login_url="login")
-@user_passes_test(profile_check, login_url="update_profile", redirect_field_name=None)
+@login_required(login_url="network:login")
+@user_passes_test(profile_check, login_url="network:update_profile", redirect_field_name=None)
 def bookmarks(request):
     try:
         bookmarks = request.user.bookmarked_posts
@@ -328,7 +328,7 @@ def bookmarks(request):
     })
 
 
-@user_passes_test(profile_check, login_url="update_profile", redirect_field_name=None)
+@user_passes_test(profile_check, login_url="network:update_profile", redirect_field_name=None)
 @require_POST
 @csrf_exempt
 def bookmark(request, post_id):
@@ -362,7 +362,7 @@ def bookmark(request, post_id):
             "action": "Bookmarked"
         })
     
-@user_passes_test(profile_check, login_url="update_profile", redirect_field_name=None)
+@user_passes_test(profile_check, login_url="network:update_profile", redirect_field_name=None)
 @require_POST
 @csrf_exempt
 def pinpost(request, post_id):
@@ -409,8 +409,8 @@ def settings(request):
     return render(request, "network/settings.html")
 
 
-@login_required(login_url="login")
-@user_passes_test(profile_check, login_url="update_profile", redirect_field_name=None)
+@login_required(login_url="network:login")
+@user_passes_test(profile_check, login_url="network:update_profile", redirect_field_name=None)
 def change_password(request):
     if request.method == "GET":
         return render(request, "network/change-password.html")
@@ -423,11 +423,11 @@ def change_password(request):
     
     request.user.set_password(post["new-password"])
     request.user.save()
-    return redirect("logout")
+    return redirect("network:logout")
 
 
-@login_required(login_url="login")
-@user_passes_test(profile_check, login_url="update_profile", redirect_field_name=None)
+@login_required(login_url="network:login")
+@user_passes_test(profile_check, login_url="network:update_profile", redirect_field_name=None)
 def delete_account(request):
     if request.method == "GET":
         return render(request, "network/delete-account.html")
@@ -440,5 +440,5 @@ def delete_account(request):
     
     user = request.user
     user.delete()
-    return redirect("index")
+    return redirect("network:index")
     

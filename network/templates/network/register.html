@@ -5,7 +5,7 @@
 {% block body %}
 
 <section class="p-4 h-100 d-flex flex-column gap-2 align-items-center justify-content-center">
-    <form class="bg-primary-clr rounded shadow-sm rounded-2 p-4 d-flex flex-column gap-2" action="{% url 'register' %}" method="post" style="width: min(400px, 90%);">
+    <form class="bg-primary-clr rounded shadow-sm rounded-2 p-4 d-flex flex-column gap-2" action="{% url 'network:register' %}" method="post" style="width: min(400px, 90%);">
         <h2 class="text-primary-emphasis text-center">Register</h2>
         {% csrf_token %}
 
@@ -34,7 +34,7 @@
                 placeholder="Confirm Password">
         </div>
         <input class="btn btn-accent mt-2" type="submit" value="Register">
-        <small class="text-center">Already have an account? <a class="text-accent" href="{% url 'login' %}">Log In</a>.</small>
+        <small class="text-center">Already have an account? <a class="text-accent" href="{% url 'network:login' %}">Log In</a>.</small>
     </form>
 </section>
 
