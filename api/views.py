@@ -38,3 +38,11 @@ class CommentViewSet(viewsets.ModelViewSet):
         elif self.action == "retrieve":
             return [IsOwnerOrReadOnly()]
         return super().get_permissions()
+
+
+class PostsFollowing(generics.ListAPIView):
+    serializer_class = PostSerializer
+
+    def get_queryset(self):
+        following = self.request.user.following_list
+        return Post.objects.filter(user__in=following)
