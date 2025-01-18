@@ -1,6 +1,6 @@
 from rest_framework import generics, viewsets
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
-from api.permissions import IsOwnerOrReadOnly, ReadOnly
+from api.permissions import IsOwnerOrReadOnly
 from network.models import *
 from .serializers import *
 
