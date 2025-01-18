@@ -1,5 +1,5 @@
 from rest_framework import generics, viewsets
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from api.permissions import IsOwnerOrReadOnly
 from network.models import *
 from .serializers import *
@@ -42,6 +42,7 @@ class CommentViewSet(viewsets.ModelViewSet):
 
 class PostsFollowing(generics.ListAPIView):
     serializer_class = PostSerializer
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         following = self.request.user.following_list
