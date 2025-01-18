@@ -17,6 +17,7 @@ app_name = 'api'
 urlpatterns = [
     path('auth/', include('djoser.urls')),
     path('posts/following/', views.PostsFollowing.as_view(), name="posts-following"),
+    path('posts/bookmarks/', views.BookmarkedPosts.as_view(), name="bookmarks"),
     path('', include(router.urls)),
     path('', include(posts_router.urls)),
 ]

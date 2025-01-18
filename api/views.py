@@ -47,3 +47,11 @@ class PostsFollowing(generics.ListAPIView):
     def get_queryset(self):
         following = self.request.user.following_list
         return Post.objects.filter(user__in=following)
+    
+
+class BookmarkedPosts(generics.ListAPIView):
+    serializer_class = PostSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return self.request.user.bookmarked_posts
