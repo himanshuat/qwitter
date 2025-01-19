@@ -34,6 +34,37 @@ class PostViewSet(viewsets.ModelViewSet):
             return Response({"message": "Bookmark removed."}, status=status.HTTP_204_NO_CONTENT)
 
         return Response({"message": "Post bookmarked."}, status=status.HTTP_201_CREATED)
+    
+    @action(detail=True, methods=['post'], url_name="pin", permission_classes=[IsAuthenticated])
+    def pin(self, request, id=None):
+        post = self.get_object()
+
+        if post.user != request.user:
+            return Response(
+                {"message": "You can only pin or unpin your own posts."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        if post.ispinned:
+            post.ispinned = False
+            post.save()
+            return Response(
+                {"message": "The post has been unpinned."},
+                status=status.HTTP_200_OK
+            )
+        else:
+            old_pinned_post = Post.objects.filter(user=request.user, ispinned=True).first()
+            if old_pinned_post:
+                old_pinned_post.ispinned = False
+                old_pinned_post.save()
+
+            post.ispinned = True
+            post.save()
+
+            message = "The post has been pinned"
+            message += ", and the previously pinned post was unpinned." if old_pinned_post else "."
+
+            return Response({"message": message}, status=status.HTTP_200_OK)
 
     def get_permissions(self):
         if self.action in ["update", "partial_update", "destroy"]:
