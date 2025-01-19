@@ -12,6 +12,10 @@ class PostSerializer(serializers.ModelSerializer):
         fields = ["id", "content", "date", "ispinned", "reactions_count", "comments_count", "user", "liked", "bookmarked"]
         read_only_fields = ["id", "date", "ispinned", "reactions_count", "comments_count", "user", "liked", "bookmarked"]
 
+    def create(self, validated_data):
+        user_id = self.context['request'].user.id
+        return Post.objects.create(user_id=user_id, **validated_data)
+    
     def get_user(self, obj):
         user = obj.user
         
