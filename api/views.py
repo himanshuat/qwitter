@@ -1,5 +1,8 @@
 from rest_framework import generics, viewsets
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework import status
 from api.permissions import IsOwnerOrReadOnly
 from network.models import *
 from .serializers import *
@@ -9,6 +12,28 @@ class PostViewSet(viewsets.ModelViewSet):
     serializer_class = PostSerializer
     queryset = Post.objects.all()
     lookup_field = 'id'
+
+    @action(detail=True, methods=['post'], url_name="react", permission_classes=[IsAuthenticated])
+    def react(self, request, id=None):
+        post = self.get_object()
+        reaction, created = Reaction.objects.get_or_create(user=request.user, post=post)
+
+        if not created:
+            reaction.delete()
+            return Response({"message": "Like removed."}, status=status.HTTP_204_NO_CONTENT)
+
+        return Response({"message": "Post liked."}, status=status.HTTP_201_CREATED)
+    
+    @action(detail=True, methods=['post'], url_name="bookmark", permission_classes=[IsAuthenticated])
+    def bookmark(self, request, id=None):
+        post = self.get_object()
+        bookmark, created = Bookmark.objects.get_or_create(user=request.user, post=post)
+
+        if not created:
+            bookmark.delete()
+            return Response({"message": "Bookmark removed."}, status=status.HTTP_204_NO_CONTENT)
+
+        return Response({"message": "Post bookmarked."}, status=status.HTTP_201_CREATED)
 
     def get_permissions(self):
         if self.action in ["update", "partial_update", "destroy"]:
