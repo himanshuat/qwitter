@@ -3,9 +3,28 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticate
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status
-from api.permissions import IsOwnerOrReadOnly
+from api.permissions import IsOwnerOrReadOnly, NoDelete
 from network.models import *
 from .serializers import *
+
+
+class ProfileViewSet(viewsets.ModelViewSet):
+    serializer_class = ProfileSerializer
+    queryset = Profile.objects.all()
+    lookup_field = 'user'
+
+    def get_permissions(self):
+        if self.request.method == "DELETE" or self.action == "destroy":
+            return [NoDelete()]
+        elif self.action in ["update", "partial_update"]:
+            return [IsOwnerOrReadOnly()]
+        elif self.action == "list":
+            return [IsAuthenticatedOrReadOnly()]
+        elif self.action == "retrieve":
+            return [IsOwnerOrReadOnly()]
+        elif self.action == "connect":
+            return [IsAuthenticated()]
+        return super().get_permissions()
 
 
 class PostViewSet(viewsets.ModelViewSet):
