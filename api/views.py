@@ -22,7 +22,7 @@ class ProfileViewSet(viewsets.ModelViewSet):
             return [IsAuthenticatedOrReadOnly()]
         elif self.action == "retrieve":
             return [IsOwnerOrReadOnly()]
-        elif self.action == "connect":
+        elif self.action == "create" or self.action == "connect":
             return [IsAuthenticated()]
         return super().get_permissions()
 

@@ -19,6 +19,12 @@ class ProfileSerializer(serializers.ModelSerializer):
         fields = ['id', 'username', 'email', 'is_superuser', 'is_staff', 'date_joined', 'following', 'following_count', 'posts_count', 'followers_count', 'name', 'image', 'dob', 'bio']
         read_only_fields = ['id', 'username', 'email', 'is_superuser', 'is_staff', 'date_joined', 'following', 'following_count', 'posts_count', 'followers_count']
 
+    def create(self, validated_data):
+        user_id = self.context['request'].user.id
+        if Profile.objects.filter(user_id=user_id).exists():
+            raise serializers.ValidationError({"detail": "A profile already exists for this user."})
+        return Profile.objects.create(user_id=user_id, **validated_data)
+    
     def get_following(self, obj):
         if self.context['request'].user.is_authenticated:
             result = Connection.objects.filter(user_id=obj.user.id, follower_id=self.context['request'].user.id)
