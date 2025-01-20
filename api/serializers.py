@@ -9,8 +9,8 @@ class PostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = ["id", "content", "date", "ispinned", "reactions_count", "comments_count", "user", "liked", "bookmarked"]
-        read_only_fields = ["id", "date", "ispinned", "reactions_count", "comments_count", "user", "liked", "bookmarked"]
+        fields = ["id", "content", "date", "ispinned", "liked", "bookmarked", "reactions_count", "comments_count", "user"]
+        read_only_fields = ["id", "date", "ispinned", "liked", "bookmarked", "reactions_count", "comments_count", "user"]
 
     def create(self, validated_data):
         user_id = self.context['request'].user.id
