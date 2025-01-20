@@ -42,6 +42,24 @@ class ProfileViewSet(viewsets.ModelViewSet):
         else:
             Connection.objects.create(user=target_user, follower=request.user)
             return Response({"detail": "Followed successfully."}, status=status.HTTP_201_CREATED)
+        
+    @action(detail=True, methods=['get'], permission_classes=[IsAuthenticated])
+    def following(self, request, user=None):
+        profile = self.get_object()
+        target_user = profile.user
+
+        following_list = target_user.following_list
+        data = [{"id": user.id, "username": user.username, "name": user.profile.name, "image": user.profile.image } for user in following_list]
+        return Response(data, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=['get'], permission_classes=[IsAuthenticated])
+    def followers(self, request, user=None):
+        profile = self.get_object()
+        target_user = profile.user
+
+        followers_list = target_user.followers_list
+        data = [{"id": user.id, "username": user.username, "name": user.profile.name, "image": user.profile.image } for user in followers_list]
+        return Response(data, status=status.HTTP_200_OK)
 
 
 class PostViewSet(viewsets.ModelViewSet):
