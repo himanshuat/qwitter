@@ -26,6 +26,23 @@ class ProfileViewSet(viewsets.ModelViewSet):
             return [IsAuthenticated()]
         return super().get_permissions()
 
+    @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
+    def connect(self, request, user=None):
+        profile = self.get_object()
+        target_user = profile.user
+
+        if target_user == request.user:
+            return Response({"detail": "You cannot follow yourself."}, status=status.HTTP_400_BAD_REQUEST)
+
+        connection = Connection.objects.filter(user=target_user, follower=request.user).first()
+
+        if connection:
+            connection.delete()
+            return Response({"detail": "Unfollowed successfully."}, status=status.HTTP_200_OK)
+        else:
+            Connection.objects.create(user=target_user, follower=request.user)
+            return Response({"detail": "Followed successfully."}, status=status.HTTP_201_CREATED)
+
 
 class PostViewSet(viewsets.ModelViewSet):
     serializer_class = PostSerializer
