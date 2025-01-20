@@ -2,6 +2,30 @@ from rest_framework import serializers
 from network.models import *
 
 
+class ProfileSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(source='user.id', read_only=True)
+    username = serializers.CharField(source='user.username', read_only=True)
+    email = serializers.EmailField(source='user.email', read_only=True)
+    is_superuser = serializers.BooleanField(source='user.is_superuser', read_only=True)
+    is_staff = serializers.BooleanField(source='user.is_staff', read_only=True)
+    date_joined = serializers.DateTimeField(source='user.date_joined', read_only=True)
+    following = serializers.SerializerMethodField()
+    following_count = serializers.IntegerField(source='user.following_count', read_only=True)
+    followers_count = serializers.IntegerField(source='user.followers_count', read_only=True)
+    posts_count = serializers.IntegerField(source='user.posts_count', read_only=True)
+
+    class Meta:
+        model = Profile
+        fields = ['id', 'username', 'email', 'is_superuser', 'is_staff', 'date_joined', 'following', 'following_count', 'posts_count', 'followers_count', 'name', 'image', 'dob', 'bio']
+        read_only_fields = ['id', 'username', 'email', 'is_superuser', 'is_staff', 'date_joined', 'following', 'following_count', 'posts_count', 'followers_count']
+
+    def get_following(self, obj):
+        if self.context['request'].user.is_authenticated:
+            result = Connection.objects.filter(user_id=obj.user.id, follower_id=self.context['request'].user.id)
+            return bool(len(result))
+        return False
+
+
 class PostSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
     liked = serializers.SerializerMethodField()
