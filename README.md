@@ -48,7 +48,8 @@ A social networking platform with elegant designs where end-users can share text
 - [x] Pinned Posts
 - [ ] Search
 - [ ] Communities
-- [ ] API
+- [X] API
+- [ ] API Documentation
 - [ ] Qwitter Mobile
 - [ ] Logo
 - [ ] Messaging
