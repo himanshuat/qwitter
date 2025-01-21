@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'djoser',
     'django_filters',
+    'drf_spectacular',
 ]
 
 MIDDLEWARE = [
@@ -101,12 +102,21 @@ DATABASES = {
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
     ),
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
 
 SIMPLE_JWT = {
    'AUTH_HEADER_TYPES': ('JWT',),
+}
+
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Qwitter API',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
 }
 
 
