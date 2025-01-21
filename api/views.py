@@ -3,8 +3,9 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticate
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status
-from api.permissions import IsOwnerOrReadOnly, NoDelete
+from django_filters.rest_framework import DjangoFilterBackend
 from network.models import *
+from .permissions import IsOwnerOrReadOnly, NoDelete
 from .serializers import *
 
 
@@ -65,6 +66,8 @@ class ProfileViewSet(viewsets.ModelViewSet):
 class PostViewSet(viewsets.ModelViewSet):
     serializer_class = PostSerializer
     queryset = Post.objects.all().order_by("-date")
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['user_id']
     lookup_field = 'id'
 
     @action(detail=True, methods=['post'], url_name="react", permission_classes=[IsAuthenticated])
