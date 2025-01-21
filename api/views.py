@@ -64,7 +64,7 @@ class ProfileViewSet(viewsets.ModelViewSet):
 
 class PostViewSet(viewsets.ModelViewSet):
     serializer_class = PostSerializer
-    queryset = Post.objects.all()
+    queryset = Post.objects.all().order_by("-date")
     lookup_field = 'id'
 
     @action(detail=True, methods=['post'], url_name="react", permission_classes=[IsAuthenticated])
@@ -156,7 +156,7 @@ class PostsFollowing(generics.ListAPIView):
 
     def get_queryset(self):
         following = self.request.user.following_list
-        return Post.objects.filter(user__in=following)
+        return Post.objects.filter(user__in=following).order_by("-date")
     
 
 class BookmarkedPosts(generics.ListAPIView):
