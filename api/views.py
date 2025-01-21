@@ -8,6 +8,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from network.models import *
 from .permissions import IsOwnerOrReadOnly, NoDelete
 from .serializers import *
+from .pagination import DefaultPagination
 
 
 class ProfileViewSet(viewsets.ModelViewSet):
@@ -72,6 +73,7 @@ class PostViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend, SearchFilter]
     filterset_fields = ['user_id']
     search_fields = ['content', 'user__username', 'user__profile__name']
+    pagination_class = DefaultPagination
     lookup_field = 'id'
 
     @action(detail=True, methods=['post'], url_name="react", permission_classes=[IsAuthenticated])
@@ -160,6 +162,7 @@ class CommentViewSet(viewsets.ModelViewSet):
 class PostsFollowing(generics.ListAPIView):
     serializer_class = PostSerializer
     permission_classes = [IsAuthenticated]
+    pagination_class = DefaultPagination
 
     def get_queryset(self):
         following = self.request.user.following_list
@@ -169,6 +172,7 @@ class PostsFollowing(generics.ListAPIView):
 class BookmarkedPosts(generics.ListAPIView):
     serializer_class = PostSerializer
     permission_classes = [IsAuthenticated]
+    pagination_class = DefaultPagination
 
     def get_queryset(self):
         return self.request.user.bookmarked_posts
