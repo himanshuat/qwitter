@@ -3,6 +3,7 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticate
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.filters import SearchFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from network.models import *
 from .permissions import IsOwnerOrReadOnly, NoDelete
@@ -12,6 +13,8 @@ from .serializers import *
 class ProfileViewSet(viewsets.ModelViewSet):
     serializer_class = ProfileSerializer
     queryset = Profile.objects.all()
+    filter_backends = [SearchFilter]
+    search_fields = ['name', 'user__username']
     lookup_field = 'user'
 
     def get_permissions(self):
@@ -66,8 +69,9 @@ class ProfileViewSet(viewsets.ModelViewSet):
 class PostViewSet(viewsets.ModelViewSet):
     serializer_class = PostSerializer
     queryset = Post.objects.all().order_by("-date")
-    filter_backends = [DjangoFilterBackend]
+    filter_backends = [DjangoFilterBackend, SearchFilter]
     filterset_fields = ['user_id']
+    search_fields = ['content', 'user__username', 'user__profile__name']
     lookup_field = 'id'
 
     @action(detail=True, methods=['post'], url_name="react", permission_classes=[IsAuthenticated])
