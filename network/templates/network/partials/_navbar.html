@@ -1,7 +1,12 @@
 {% load static %}
 
 <nav class="col-lg-2 col-md-3 col-12 p-0 bg-primary-clr d-none d-md-flex flex-md-column">
-    <h2 class="m-4"><a class="text-accent" href="{% url 'network:index' %}">Qwitter</a></h2>
+    <h2 class="m-4 d-flex align-items-center gap-2">
+        <a class="text-accent d-flex align-items-center" href="{% url 'network:index' %}">
+            <img src="{% static 'network/qwitter-logo.svg' %}" alt="Qwitter Logo" style="height: 32px;">
+            <span class="d-none d-md-inline ms-2">Qwitter</span>
+        </a>
+    </h2>
 
     <div>
         <ul class="navbar-nav mx-4">
@@ -58,7 +63,13 @@
 </nav>
 
 <nav class="bg-primary-clr sticky-top shadow-sm d-flex d-md-none align-items-center gap-3 px-4 py-3">
-    <h2 class="m-0"><a class="text-accent" href="{% url 'network:index' %}">Qwitter</a></h2>
+    <h2 class="m-0 d-flex align-items-center">
+        <a class="text-accent d-flex align-items-center" href="{% url 'network:index' %}">
+            <img src="{% static 'network/qwitter-logo.svg' %}" alt="Qwitter Logo" style="height: 28px;">
+            <span class="d-none d-sm-inline ms-2">Qwitter</span>
+        </a>
+    </h2>
+
     <div class="ms-auto">
         {% if user.is_authenticated %}
         <a class="text-accent-dark fs-5" href="{% url 'network:profile' user %}">

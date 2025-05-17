@@ -51,5 +51,5 @@ A social networking platform with elegant designs where end-users can share text
 - [X] API
 - [X] API Documentation
 - [ ] Qwitter Mobile
-- [ ] Logo
+- [X] Logo
 - [ ] Messaging
