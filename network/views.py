@@ -41,6 +41,8 @@ def login_view(request):
                 "message": "Invalid username and/or password."
             })
     else:
+        if request.user.is_authenticated:
+            return redirect("network:index")
         return render(request, "network/login.html")
 
 
@@ -73,6 +75,8 @@ def register(request):
         login(request, user)
         return HttpResponseRedirect(reverse("network:index"))
     else:
+        if request.user.is_authenticated:
+            return redirect("network:index")
         return render(request, "network/register.html")
 
 
