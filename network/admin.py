@@ -3,6 +3,9 @@ from django.utils.html import format_html
 from .models import *
 
 
+admin.site.index_title = "Welcome to the Qwitter Admin Panel"
+
+
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
     list_display = ("username", 'profile_image', "email", "followers_count", "following_count", "posts_count", "is_staff")
