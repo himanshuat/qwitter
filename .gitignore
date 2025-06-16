@@ -1,3 +1,4 @@
 db.sqlite3
 data.json
+.env
 **/__pycache__

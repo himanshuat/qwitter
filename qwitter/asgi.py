@@ -4,13 +4,13 @@ ASGI config for qwitter project.
 It exposes the ASGI callable as a module-level variable named ``application``.
 
 For more information on this file, see
-https://docs.djangoproject.com/en/3.0/howto/deployment/asgi/
+https://docs.djangoproject.com/en/5.2/howto/deployment/asgi/
 """
 
 import os
 
 from django.core.asgi import get_asgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'qwitter.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'qwitter.settings.prod')
 
 application = get_asgi_application()
