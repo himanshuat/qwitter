@@ -32,7 +32,7 @@ class User(AbstractUser):
 	REQUIRED_FIELDS = ['email', 'name']
 
 	def __str__(self):
-		return f"@{self.username}"
+		return self.username
 	
 	def save(self, *args, **kwargs):
 		self.username = self.username.lower()
