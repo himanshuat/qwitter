@@ -4,6 +4,11 @@ from django.db import models
 from apps.core.models import TimeStampedModel
 from apps.accounts.models import User
 
+from apps.feed.managers.bookmark import BookmarkManager
+from apps.feed.managers.comment import CommentManager
+from apps.feed.managers.follow import FollowManager
+from apps.feed.managers.post import PostManager
+from apps.feed.managers.reaction import ReactionManager
 
 class Follow(TimeStampedModel):
 	follower = models.ForeignKey(
@@ -18,6 +23,8 @@ class Follow(TimeStampedModel):
 		on_delete=models.CASCADE,
 		help_text="User who is being followed.",
 	)
+
+	objects = FollowManager()
 
 	class Meta:
 		verbose_name = "Follow"
@@ -58,6 +65,8 @@ class Post(TimeStampedModel):
 		default=False,
 		help_text="Mark the post as pinned to appear at the top of user's profile."
 	)
+
+	objects = PostManager()
 
 	class Meta:
 		verbose_name = "Post"
@@ -132,6 +141,8 @@ class Comment(TimeStampedModel):
 		help_text="Content of the comment (max 280 characters)."
 	)
 
+	objects = CommentManager()
+
 	class Meta:
 		verbose_name = "Comment"
 		verbose_name_plural = "Comments"
@@ -154,6 +165,8 @@ class Reaction(TimeStampedModel):
 		help_text="Post that was reacted to.",
 		db_index=True,
 	)
+
+	objects = ReactionManager()
 
 	class Meta:
 		verbose_name = "Reaction"
@@ -180,6 +193,8 @@ class Bookmark(TimeStampedModel):
 		on_delete=models.CASCADE,
 		help_text="Bookmarked post.",
 	)
+
+	objects = BookmarkManager()
 
 	class Meta:
 		verbose_name = "Bookmark"
