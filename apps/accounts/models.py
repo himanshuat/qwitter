@@ -49,5 +49,5 @@ class User(AbstractUser):
 	@property
 	def avatar_tag(self):
 		img_url = self.avatar
-		return mark_safe(f'<img src="{img_url}" width="40" height="40" style="border-radius:50%;" />')
+		return mark_safe(f'<img src="{img_url}" width="40" height="40" style="border-radius:50%; object-fit: cover;" />')
 	
