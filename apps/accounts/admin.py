@@ -7,7 +7,7 @@ from .models import User
 @admin.register(User)
 class UserAdmin(BaseUserAdmin):
     model = User
-    list_display = ('avatar_tag', 'username', 'name', 'email', 'is_active', 'is_staff')
+    list_display = ('avatar_tag', 'username', 'name', 'email', 'is_active')
     search_fields = ('username', 'email', 'name')
     readonly_fields = ('avatar_tag', 'last_login', 'date_joined')
 
