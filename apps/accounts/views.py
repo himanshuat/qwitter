@@ -6,6 +6,8 @@ from django.db import IntegrityError
 from django.contrib.auth.decorators import login_required
 
 from .models import User
+from apps.feed.models import Post
+from apps.core.utils import paginate_queryset
 
 
 def login_view(request):
@@ -66,10 +68,15 @@ def register(request):
 
 
 def profile(request, username):
-   user = get_object_or_404(User, username__iexact=username)
-   return render(request, "accounts/profile.html", {
-       "profile_user": user
-   })
+    user = get_object_or_404(User, username__iexact=username)
+
+    posts = Post.objects.for_user(user).order_by("-is_pinned", "-created_date")
+    page_obj = paginate_queryset(request, posts)
+
+    return render(request, "accounts/profile.html", {
+        "profile_user": user,
+        "posts_page": page_obj,
+    })
 
 
 @login_required
