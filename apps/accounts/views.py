@@ -10,9 +10,13 @@ from apps.feed.models import Post
 from apps.core.utils import paginate_queryset
 
 
+def index(request):
+	return redirect("feed:index")
+
+
 def login_view(request):
 	if request.user.is_authenticated:
-		return redirect("accounts:profile", username=request.user.username)
+		return redirect("feed:index")
 
 	if request.method == "POST":
 		username = request.POST.get("username", "").lower()
@@ -22,7 +26,7 @@ def login_view(request):
 		if user:
 			login(request, user)
 			messages.success(request, "Logged in successfully.")
-			return redirect("accounts:profile", username=user.username)
+			return redirect("feed:index")
 		else:
 			messages.error(request, "Invalid username or password.")
 
@@ -32,12 +36,12 @@ def login_view(request):
 def logout_view(request):
 	logout(request)
 	messages.info(request, "You've been logged out.")
-	return HttpResponse("👋 Logged out successfully!")
+	return redirect("feed:index")
 
 
 def register(request):
 	if request.user.is_authenticated:
-		return redirect("accounts:profile", username=request.user.username)
+		return redirect("feed:index")
 
 	if request.method == "POST":
 		username = request.POST.get("username", "").lower()
