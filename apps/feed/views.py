@@ -10,22 +10,20 @@ from apps.core.utils import paginate_queryset
 from apps.feed.models import Post, Comment, Reaction, Bookmark, Follow
 
 
-@login_required
-def feed(request):
-    posts = Post.objects.original().order_by("-created_date")
+def index(request):
+    posts = Post.objects.all().order_by("-created_date")
     page_obj = paginate_queryset(request, posts)
-    return render(request, "feed/feed.html", {"posts_page": page_obj})
+    return render(request, "feed/index.html", {"posts_page": page_obj})
 
 
 @login_required
 def following(request):
     followed_users = Follow.objects.following(request.user).values_list("followed", flat=True)
-    posts = Post.objects.original().filter(author__in=followed_users).order_by("-created_date")
+    posts = Post.objects.all().filter(author__in=followed_users).order_by("-created_date")
     page_obj = paginate_queryset(request, posts)
     return render(request, "feed/following.html", {"posts_page": page_obj})
 
 
-@login_required
 def post(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
     comments = Comment.objects.for_post(post)
@@ -37,9 +35,10 @@ def new_post(request):
     if request.method == "GET":
         return render(request, "feed/new_post.html")
 
-    body = request.POST.get("content", "").strip()
+    body = request.POST.get("body", "").strip()
     if body:
-        Post.objects.create(author=request.user, body=body)
+        post = Post.objects.create(author=request.user, body=body)
+        return redirect("feed:post", post_id=post.id)
     return redirect("feed:index")
 
 
