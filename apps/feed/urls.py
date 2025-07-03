@@ -4,7 +4,7 @@ from . import views
 app_name = "feed"
 
 urlpatterns = [
-    path("", views.feed, name="feed"),
+    path("", views.index, name="index"),
     path("following/", views.following, name="following"),
     
     path("posts/<int:post_id>/", views.post, name="post"),
