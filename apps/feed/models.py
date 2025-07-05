@@ -155,6 +155,7 @@ class Comment(TimeStampedModel):
 class Reaction(TimeStampedModel):
 	user = models.ForeignKey(
 		User,
+		related_name="reactions",
 		on_delete=models.CASCADE,
 		help_text="User who reacted to the post.",
 	)
