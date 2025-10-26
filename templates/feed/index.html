@@ -1,0 +1,10 @@
+{% extends "core/base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block body %}
+<section class="p-3">
+	<h1 class="text-primary-emphasis">Home</h1>
+	{% include 'components/posts.html' %}
+</section>
+{% endblock %}

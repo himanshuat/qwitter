@@ -1,0 +1,24 @@
+{% load static %}
+
+<div class="post" data-postid="{{ post.pk }}">
+    {% include "components/postheader.html" %}
+
+    <a class="post-content editable-post-body bg-secondary-clr mt-3 p-3 rounded-2" href="{% url 'feed:post' post.pk %}">
+        {{ post.body }}
+    </a>
+
+    {% if user == post.author %}
+    <form data-postid="{{ post.pk }}" class="post-edit-form my-3">
+        <div class="form-floating">
+            <textarea class="form-control" name="body" id="body" style="height: 100px;" placeholder="Updated post body"
+                required>{{ post.body }}</textarea>
+            <label for="body">Updated post body</label>
+        </div>
+        <div class="mt-2">
+            <button type="submit" class="btn btn-accent w-100">Update Post</button>
+        </div>
+    </form>
+    {% endif %}
+
+    {% include "components/postfooter.html" %}
+</div>

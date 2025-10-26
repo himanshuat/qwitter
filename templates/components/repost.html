@@ -1,0 +1,6 @@
+{% load static %}
+
+<div data-postid="{{ post.pk }}">
+    <p><i class="fas fa-retweet"></i> <small class="ml-1">{{ post.author }} reposted</small></p>
+	{% include "components/original_post.html" with post=post.parent %}
+</div>
