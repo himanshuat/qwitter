@@ -66,9 +66,9 @@ def delete_post(request, post_id):
 @require_POST
 def comment(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
-    content = request.POST.get("content", "").strip()
-    if content:
-        Comment.objects.create(post=post, author=request.user, content=content)
+    body = request.POST.get("body", "").strip()
+    if body:
+        Comment.objects.create(post=post, author=request.user, body=body)
     return redirect("feed:post", post_id=post_id)
 
 
@@ -110,10 +110,19 @@ def react(request, post_id):
 
 @login_required
 def bookmarks(request):
-    posts = Bookmark.objects.for_user(request.user).values_list("post", flat=True)
-    bookmarked_posts = Post.objects.filter(pk__in=posts).order_by("-created_date")
+    bookmarks = (
+        Bookmark.objects
+        .filter(user=request.user)
+        .select_related("post")
+        .order_by("-created_date")
+    )
+
+    bookmarked_posts = [bookmark.post for bookmark in bookmarks if bookmark.post]
     page_obj = paginate_queryset(request, bookmarked_posts)
-    return render(request, "feed/bookmarks.html", {"posts_page": page_obj})
+
+    return render(request, "feed/bookmarks.html", {
+        "posts_page": page_obj
+    })
 
 
 @login_required
