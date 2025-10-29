@@ -4,42 +4,42 @@
 <p class="post-pinned text-accent"><i class="fas fa-thumbtack"></i> Pinned</p>
 {% endif %}
 <div class="post-header">
-    <a href="{% url 'accounts:profile' post.author %}">
-        <img class="rounded-circle" src="{{ post.author.image }}" alt="{{ post.author.name }}">
-    </a>
+	<a href="{% url 'accounts:profile' post.author %}">
+		<img class="rounded-circle" src="{{ post.author.image }}" alt="{{ post.author.name }}">
+	</a>
 
-    <div>
-        <a class="d-flex gap-2" href="{% url 'accounts:profile' post.author %}">
-            <strong class="text-primary-emphasis">{{ post.author.name }}</strong>
-            <span class="text-accent">@{{ post.author }}</span>
-        </a>
-        <small>{{ post.created_date | date:"g:i A • M d, Y" }}</small>
-    </div>
+	<div>
+		<a class="d-flex gap-2" href="{% url 'accounts:profile' post.author %}">
+			<strong class="text-primary-emphasis">{{ post.author.name }}</strong>
+			<span class="text-accent">@{{ post.author }}</span>
+		</a>
+		<small>{{ post.created_date | date:"g:i A • M d, Y" }}</small>
+	</div>
 
-    {% if user == post.author %}
-    <div class="ms-auto dropstart">
-        <button class="btn btn-sm" data-bs-toggle="dropdown"><i class="fas fa-ellipsis-v"></i></button>
-        <ul class="post-actions dropdown-menu">
-            <li>
-                <button data-postid="{{ post.pk }}" class="pin dropdown-item btn btn-sm">
-                    {% if post.ispinned %}
-                    <i class="fas fa-thumbtack"></i> Unpin from Profile
-                    {% else %}
-                    <i class="fas fa-thumbtack"></i> Pin to Profile
-                    {% endif %}
-                </button>
-            </li>
-            <li>
-                <button data-postid="{{ post.pk }}" class="edit dropdown-item btn btn-sm">
-                    <i class="far fa-edit"></i> Edit Post
-                </button>
-            </li>
-            <li>
-                <button data-postid="{{ post.pk }}" class="delete dropdown-item btn btn-sm">
-                    <i class="far fa-trash-alt"></i> Delete Post
-                </button>
-            </li>
-        </ul>
-    </div>
-    {% endif %}
+	{% if user == post.author %}
+	<div class="ms-auto dropstart">
+		<button class="btn btn-sm" data-bs-toggle="dropdown"><i class="fas fa-ellipsis-v"></i></button>
+		<ul class="post-actions dropdown-menu">
+			<li>
+				<button data-postid="{{ post.pk }}" class="pin dropdown-item btn btn-sm">
+					{% if post.ispinned %}
+					<i class="fas fa-thumbtack"></i> Unpin from Profile
+					{% else %}
+					<i class="fas fa-thumbtack"></i> Pin to Profile
+					{% endif %}
+				</button>
+			</li>
+			<li>
+				<button data-postid="{{ post.pk }}" class="edit dropdown-item btn btn-sm">
+					<i class="far fa-edit"></i> Edit Post
+				</button>
+			</li>
+			<li>
+				<button data-postid="{{ post.pk }}" class="delete dropdown-item btn btn-sm">
+					<i class="far fa-trash-alt"></i> Delete Post
+				</button>
+			</li>
+		</ul>
+	</div>
+	{% endif %}
 </div>

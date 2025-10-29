@@ -1,13 +1,13 @@
 {% load static %}
 
 <div class="d-flex flex-column gap-2">
-    {% for post in posts_page %}
-    {% include "components/post.html" %}
-    {% empty %}
-    <div class="d-flex align-items-center justify-content-center" style="height: 50vh;">
-        <h3 class="text-center text-primary-emphasis">No posts here</h3>
-    </div>
-    {% endfor %}
+	{% for post in posts_page %}
+	{% include "components/post.html" %}
+	{% empty %}
+	<div class="d-flex align-items-center justify-content-center" style="height: 50vh;">
+		<h3 class="text-center text-primary-emphasis">No posts here</h3>
+	</div>
+	{% endfor %}
 </div>
 
 {% include "components/pagination.html" %}
