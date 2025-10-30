@@ -1,2 +1,6 @@
 Django==5.2.3
 python-dotenv==1.1.0
+djangorestframework==3.16.1
+django-filter==25.2
+Markdown==3.9
+drf-spectacular==0.28.0

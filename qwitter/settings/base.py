@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+from datetime import timedelta
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 load_dotenv(BASE_DIR / '.env')
@@ -11,6 +12,7 @@ ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "").split(",")
 
 
 INSTALLED_APPS = [
+    # Core Django
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -18,6 +20,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    # Third-party
+    'rest_framework',
+    'drf_spectacular',
+    'django_filters',
+
+    # Local apps
     'apps.accounts',
     'apps.core',
     'apps.feed',
@@ -64,6 +72,42 @@ DATABASES = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
+}
+
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
+    ),
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticatedOrReadOnly",
+    ],
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
+
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+    "AUTH_HEADER_TYPES": ("Bearer",),
+}
+
+
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Qwitter API",
+    "DESCRIPTION": """
+		Qwitter is a lightweight social platform for sharing short posts and interactions — built with Django & DRF.
+
+		This documentation provides a complete reference for authentication, user management, feeds, posts, and interactions.
+    """,
+    "VERSION": "2.0.0",
+    "CONTACT": {
+        "name": "Qwitter Development Team",
+        "url": "https://github.com/himanshuat/qwitter",
+    },
+    "SERVE_INCLUDE_SCHEMA": False,
 }
 
 
