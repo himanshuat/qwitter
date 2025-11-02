@@ -10,6 +10,7 @@ urlpatterns = [
     path("feed/", include("apps.feed.urls", namespace="feed")),
 
     path("api/auth/", include("apps.core.api.urls", namespace="auth_api")),
+    path("api/", include("apps.accounts.api.urls", namespace="accounts_api")),
 
 	# API schema & docs
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
