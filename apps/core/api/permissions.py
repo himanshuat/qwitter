@@ -28,6 +28,17 @@ class IsAdminOrReadOnly(BasePermission):
         if request.method in SAFE_METHODS:
             return True
         return request.user and request.user.is_staff
+    
+
+class IsSelfOnly(BasePermission):
+    """
+    Allows access only to the authenticated user's own object.
+    """
+    def has_object_permission(self, request, view, obj):
+        return request.user.is_authenticated and obj == request.user
+
+    def has_permission(self, request, view):
+        return request.user.is_authenticated
 
 
 class IsSelfOrAdmin(BasePermission):
