@@ -1,13 +1,15 @@
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from apps.accounts.models import User
 from apps.accounts.api.serializers import (
     UserListSerializer,
     UserDetailSerializer,
     UserUpdateSerializer,
+    UserRegisterSerializer,
     ChangePasswordSerializer,
     ChangeEmailSerializer,
     ChangeUsernameSerializer,
@@ -39,6 +41,7 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
             "list": UserListSerializer,
             "retrieve": UserDetailSerializer,
             "edit": UserUpdateSerializer,
+            "register": UserRegisterSerializer,
             "change_password": ChangePasswordSerializer,
             "change_email": ChangeEmailSerializer,
             "change_username": ChangeUsernameSerializer,
@@ -80,6 +83,27 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
         serializer.is_valid(raise_exception=True)
         serializer.save(partial=True)
         return Response(serializer.data)
+    
+    @action(detail=False, methods=["post"], url_path="register", permission_classes=[AllowAny])
+    def register(self, request):
+        """
+        Register a new user account and return JWT tokens.
+        """
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+
+        refresh = RefreshToken.for_user(user)
+        tokens = {
+            "access": str(refresh.access_token),
+            "refresh": str(refresh),
+        }
+
+        user_data = UserBaseSerializer(user, context={"request": request}).data
+        return Response(
+            {"user": user_data, "tokens": tokens},
+            status=status.HTTP_201_CREATED,
+        )
 
     @action(detail=False, methods=["post"], url_path="me/change-password")
     def change_password(self, request):

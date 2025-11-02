@@ -75,6 +75,43 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         return super().update(instance, validated_data)
 
 
+class UserRegisterSerializer(serializers.ModelSerializer):
+    """
+    Serializer for registering new users.
+    Accepts username, email, name, and password.
+    """
+
+    password = serializers.CharField(write_only=True, required=True)
+
+    class Meta:
+        model = User
+        fields = ("username", "email", "name", "password")
+
+    def validate_username(self, value):
+        if User.objects.filter(username__iexact=value).exists():
+            raise serializers.ValidationError("A user with this username already exists.")
+        return value.lower()
+
+    def validate_email(self, value):
+        if User.objects.filter(email__iexact=value).exists():
+            raise serializers.ValidationError("A user with this email already exists.")
+        return value.lower()
+
+    def validate_password(self, value):
+        validate_password(value)
+        return value
+
+    def create(self, validated_data):
+        user = User(
+            username=validated_data["username"].lower(),
+            email=validated_data["email"].lower(),
+            name=validated_data["name"],
+        )
+        user.set_password(validated_data["password"])
+        user.save()
+        return user
+
+
 class ChangePasswordSerializer(serializers.Serializer):
     """
     Serializer for securely changing the user's password.
