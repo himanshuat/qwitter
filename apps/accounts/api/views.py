@@ -16,6 +16,7 @@ from apps.accounts.api.serializers import (
     UserDeactivateSerializer
 )
 from apps.core.api.serializers import UserBaseSerializer
+from apps.core.api.permissions import IsSelfOnly
 
 
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
@@ -24,6 +25,7 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
 
     Provides endpoints for:
       - Listing users (admin sees all, normal users see only themselves)
+      - Registering new accounts with JWT token response
       - Retrieving user details by username
       - Managing self profile via `/users/me/` actions:
           * view, update, change password/email/username, deactivate
@@ -50,6 +52,24 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
         }
 
         return serializer_map.get(self.action, super().get_serializer_class())
+
+    def get_permissions(self):
+        """Assign permissions dynamically based on the action."""
+
+        permission_map = {
+            "list": [IsAuthenticated],
+            "me": [IsAuthenticated],
+            "retrieve": [AllowAny],
+            "register": [AllowAny],
+            "edit": [IsSelfOnly],
+            "change_password": [IsSelfOnly],
+            "change_email": [IsSelfOnly],
+            "change_username": [IsSelfOnly],
+            "deactivate": [IsSelfOnly],
+        }
+
+        permission_classes = permission_map.get(self.action, [IsAuthenticated])
+        return [permission() for permission in permission_classes]
 
     def list(self, request, *args, **kwargs):
         """
@@ -84,7 +104,7 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
         serializer.save(partial=True)
         return Response(serializer.data)
     
-    @action(detail=False, methods=["post"], url_path="register", permission_classes=[AllowAny])
+    @action(detail=False, methods=["post"], url_path="register")
     def register(self, request):
         """
         Register a new user account and return JWT tokens.
