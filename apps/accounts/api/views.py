@@ -267,8 +267,7 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
         Retrieve a paginated list of users who follow the specified user.
         """
         user = self.get_object()
-        followers_qs = Follow.objects.followers(user).select_related("follower").order_by("-created_date")
-        follower_users = User.objects.filter(pk__in=followers_qs.values_list("follower_id", flat=True))
+        follower_users = User.objects.filter(following__followed=user).order_by("-following__created_date")
 
         page = self.paginate_queryset(follower_users)
         serializer = self.get_serializer(page, many=True, context={"request": request})
@@ -287,8 +286,7 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
         Retrieve a paginated list of users that the specified user is following.
         """
         user = self.get_object()
-        following_qs = Follow.objects.following(user).select_related("followed").order_by("-created_date")
-        following_users = User.objects.filter(pk__in=following_qs.values_list("followed_id", flat=True))
+        following_users = User.objects.filter(followers__follower=user).order_by("-followers__created_date")
 
         page = self.paginate_queryset(following_users)
         serializer = self.get_serializer(page, many=True, context={"request": request})
