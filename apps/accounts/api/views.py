@@ -5,6 +5,10 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from apps.accounts.models import User
+from apps.feed.models import Follow
+from apps.core.api.pagination import QwitterPagination
+from apps.core.api.permissions import IsSelfOnly
+from apps.core.api.serializers import UserBaseSerializer, NoInputSerializer
 from apps.accounts.api.serializers import (
     UserListSerializer,
     UserDetailSerializer,
@@ -15,8 +19,6 @@ from apps.accounts.api.serializers import (
     ChangeUsernameSerializer,
     UserDeactivateSerializer
 )
-from apps.core.api.serializers import UserBaseSerializer
-from apps.core.api.permissions import IsSelfOnly
 
 
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
@@ -29,6 +31,8 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
       - Retrieving user details by username
       - Managing self profile via `/users/me/` actions:
           * view, update, change password/email/username, deactivate
+      - Follow/Unfollow users
+      - Retrieve followers and following lists
     """
 
     queryset = User.objects.all()
@@ -49,6 +53,9 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
             "change_username": ChangeUsernameSerializer,
             "deactivate": UserDeactivateSerializer,
             "me": UserBaseSerializer,
+            "follow": NoInputSerializer,
+            "followers": UserBaseSerializer,
+            "following": UserBaseSerializer,
         }
 
         return serializer_map.get(self.action, super().get_serializer_class())
@@ -66,6 +73,9 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
             "change_email": [IsSelfOnly],
             "change_username": [IsSelfOnly],
             "deactivate": [IsSelfOnly],
+            "follow": [IsAuthenticated],
+            "following": [AllowAny],
+            "followers": [AllowAny],
         }
 
         permission_classes = permission_map.get(self.action, [IsAuthenticated])
@@ -164,3 +174,57 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response({"detail": "Account deactivated successfully."}, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=["post"], url_path="follow")
+    def follow(self, request, username=None):
+        """
+        Follow or unfollow a user.
+        """
+
+        target_user = self.get_object()
+        if target_user == request.user:
+            return Response(
+                {"success": False, "detail": "You cannot follow yourself."}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        follow_qs = Follow.objects.filter(follower=request.user, followed=target_user)
+        if follow_qs.exists():
+            follow_qs.delete()
+            return Response(
+                {"success": True, "detail": f"You have unfollowed @{target_user.username}."},
+                status=status.HTTP_200_OK,
+            )
+        
+        Follow.objects.create(follower=request.user, followed=target_user)
+        return Response(
+            {"success": True, "detail": f"You are now following @{target_user.username}."},
+            status=status.HTTP_201_CREATED,
+        )
+
+    @action(detail=True, methods=["get"], url_path="followers", pagination_class=QwitterPagination)
+    def followers(self, request, username=None):
+        """
+        Retrieve a paginated list of users who follow the specified user.
+        """
+        user = self.get_object()
+        followers_qs = Follow.objects.followers(user).select_related("follower").order_by("-created_date")
+        follower_users = User.objects.filter(pk__in=followers_qs.values_list("follower_id", flat=True))
+
+        page = self.paginate_queryset(follower_users)
+        serializer = self.get_serializer(page, many=True, context={"request": request})
+        return self.get_paginated_response(serializer.data)
+
+
+    @action(detail=True, methods=["get"], url_path="following", pagination_class=QwitterPagination)
+    def following(self, request, username=None):
+        """
+        Retrieve a paginated list of users that the specified user is following.
+        """
+        user = self.get_object()
+        following_qs = Follow.objects.following(user).select_related("followed").order_by("-created_date")
+        following_users = User.objects.filter(pk__in=following_qs.values_list("followed_id", flat=True))
+
+        page = self.paginate_queryset(following_users)
+        serializer = self.get_serializer(page, many=True, context={"request": request})
+        return self.get_paginated_response(serializer.data)
