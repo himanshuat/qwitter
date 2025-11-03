@@ -35,10 +35,12 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
       - Retrieve followers and following lists
     """
 
+
     queryset = User.objects.all()
     serializer_class = UserDetailSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
     lookup_field = "username"
+
 
     def get_serializer_class(self):
         """Select serializer dynamically based on the action."""
@@ -46,13 +48,13 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
         serializer_map = {
             "list": UserListSerializer,
             "retrieve": UserDetailSerializer,
-            "edit": UserUpdateSerializer,
             "register": UserRegisterSerializer,
-            "change_password": ChangePasswordSerializer,
-            "change_email": ChangeEmailSerializer,
-            "change_username": ChangeUsernameSerializer,
-            "deactivate": UserDeactivateSerializer,
             "me": UserBaseSerializer,
+            "edit": UserUpdateSerializer,
+            "change_username": ChangeUsernameSerializer,
+            "change_email": ChangeEmailSerializer,
+            "change_password": ChangePasswordSerializer,
+            "deactivate": UserDeactivateSerializer,
             "follow": NoInputSerializer,
             "followers": UserBaseSerializer,
             "following": UserBaseSerializer,
@@ -60,26 +62,6 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
 
         return serializer_map.get(self.action, super().get_serializer_class())
 
-    def get_permissions(self):
-        """Assign permissions dynamically based on the action."""
-
-        permission_map = {
-            "list": [IsAuthenticated],
-            "me": [IsAuthenticated],
-            "retrieve": [AllowAny],
-            "register": [AllowAny],
-            "edit": [IsSelfOnly],
-            "change_password": [IsSelfOnly],
-            "change_email": [IsSelfOnly],
-            "change_username": [IsSelfOnly],
-            "deactivate": [IsSelfOnly],
-            "follow": [IsAuthenticated],
-            "following": [AllowAny],
-            "followers": [AllowAny],
-        }
-
-        permission_classes = permission_map.get(self.action, [IsAuthenticated])
-        return [permission() for permission in permission_classes]
 
     def list(self, request, *args, **kwargs):
         """
@@ -88,6 +70,9 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
         - Admins: See all users.
         - Authenticated non-admins: See only their own details.
         """
+        self.permission_classes = [IsAuthenticated]
+        self.check_permissions(request)
+        
         if request.user.is_staff:
             queryset = self.get_queryset()
         else:
@@ -95,26 +80,21 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
 
         serializer = self.get_serializer(queryset, many=True, context={"request": request})
         return Response(serializer.data)
-
-    @action(detail=False, methods=["get"], url_path="me")
-    def me(self, request):
-        """
-        Retrieve details of the currently authenticated user.
-        """
-        serializer = self.get_serializer(request.user, context={"request": request})
-        return Response(serializer.data)
-
-    @action(detail=False, methods=["patch"], url_path="me/edit")
-    def edit(self, request):
-        """
-        Update profile information of the current authenticated user.
-        """
-        serializer = self.get_serializer(request.user, data=request.data, partial=True, context={"request": request})
-        serializer.is_valid(raise_exception=True)
-        serializer.save(partial=True)
-        return Response(serializer.data)
     
-    @action(detail=False, methods=["post"], url_path="register")
+
+    def retrieve(self, request, *args, **kwargs):
+        """
+        Retrieve detailed profile information for a specific user by username.
+        """
+        return super().retrieve(request, *args, **kwargs)
+
+
+    @action(
+        detail=False, 
+        methods=["post"], 
+        url_path="register", 
+        permission_classes=[AllowAny]
+    )
     def register(self, request):
         """
         Register a new user account and return JWT tokens.
@@ -135,27 +115,43 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
             status=status.HTTP_201_CREATED,
         )
 
-    @action(detail=False, methods=["post"], url_path="me/change-password")
-    def change_password(self, request):
-        """
-        Change the current user's password.
-        """
-        serializer = self.get_serializer(data=request.data, context={"request": request})
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response({"detail": "Password updated successfully."}, status=status.HTTP_200_OK)
 
-    @action(detail=False, methods=["post"], url_path="me/change-email")
-    def change_email(self, request):
+    @action(
+		detail=False, 
+		methods=["get"], 
+		url_path="me", 
+		permission_classes=[IsAuthenticated]
+    )
+    def me(self, request):
         """
-        Change the current user's email address.
+        Retrieve details of the currently authenticated user.
         """
-        serializer = self.get_serializer(data=request.data, context={"request": request})
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response({"detail": "Email updated successfully."}, status=status.HTTP_200_OK)
+        serializer = self.get_serializer(request.user, context={"request": request})
+        return Response(serializer.data)
 
-    @action(detail=False, methods=["post"], url_path="me/change-username")
+
+    @action(
+        detail=False, 
+        methods=["patch"], 
+        url_path="me/edit", 
+        permission_classes=[IsSelfOnly]
+    )
+    def edit(self, request):
+        """
+        Update profile information of the current authenticated user.
+        """
+        serializer = self.get_serializer(request.user, data=request.data, partial=True, context={"request": request})
+        serializer.is_valid(raise_exception=True)
+        serializer.save(partial=True)
+        return Response(serializer.data)
+
+
+    @action(
+        detail=False, 
+        methods=["post"], 
+        url_path="me/change-username", 
+        permission_classes=[IsSelfOnly]
+    )
     def change_username(self, request):
         """
         Change the current user's username.
@@ -163,9 +159,56 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
         serializer = self.get_serializer(data=request.data, context={"request": request})
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response({"detail": "Username updated successfully."}, status=status.HTTP_200_OK)
+        return Response(
+            {"success": True, "detail": "Username updated successfully."}, 
+            status=status.HTTP_200_OK
+        )
 
-    @action(detail=False, methods=["post"], url_path="me/deactivate")
+
+    @action(
+        detail=False, 
+        methods=["post"], 
+        url_path="me/change-email", 
+        permission_classes=[IsSelfOnly]
+    )
+    def change_email(self, request):
+        """
+        Change the current user's email address.
+        """
+        serializer = self.get_serializer(data=request.data, context={"request": request})
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(
+            {"success": True, "detail": "Email updated successfully."}, 
+            status=status.HTTP_200_OK
+        )
+    
+
+    @action(
+        detail=False, 
+		methods=["post"], 
+		url_path="me/change-password", 
+		permission_classes=[IsSelfOnly]
+	)
+    def change_password(self, request):
+        """
+        Change the current user's password.
+        """
+        serializer = self.get_serializer(data=request.data, context={"request": request})
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(
+            {"success": True, "detail": "Password updated successfully."}, 
+            status=status.HTTP_200_OK
+        )
+
+
+    @action(
+        detail=False, 
+        methods=["post"], 
+        url_path="me/deactivate", 
+        permission_classes=[IsSelfOnly]
+    )
     def deactivate(self, request):
         """
         Deactivate the current user's account (soft delete).
@@ -173,9 +216,18 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
         serializer = self.get_serializer(data=request.data, context={"request": request})
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response({"detail": "Account deactivated successfully."}, status=status.HTTP_200_OK)
+        return Response(
+            {"success": True, "detail": "Account deactivated successfully."}, 
+            status=status.HTTP_200_OK
+        )
 
-    @action(detail=True, methods=["post"], url_path="follow")
+
+    @action(
+        detail=True, 
+        methods=["post"], 
+        url_path="follow", 
+        permission_classes=[IsAuthenticated]
+    )
     def follow(self, request, username=None):
         """
         Follow or unfollow a user.
@@ -202,7 +254,14 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
             status=status.HTTP_201_CREATED,
         )
 
-    @action(detail=True, methods=["get"], url_path="followers", pagination_class=QwitterPagination)
+
+    @action(
+        detail=True, 
+        methods=["get"], 
+        url_path="followers", 
+        pagination_class=QwitterPagination, 
+        permission_classes=[AllowAny]
+    )
     def followers(self, request, username=None):
         """
         Retrieve a paginated list of users who follow the specified user.
@@ -216,7 +275,13 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
         return self.get_paginated_response(serializer.data)
 
 
-    @action(detail=True, methods=["get"], url_path="following", pagination_class=QwitterPagination)
+    @action(
+        detail=True, 
+        methods=["get"], 
+        url_path="following", 
+        pagination_class=QwitterPagination, 
+        permission_classes=[AllowAny]
+    )
     def following(self, request, username=None):
         """
         Retrieve a paginated list of users that the specified user is following.
