@@ -4,3 +4,4 @@ djangorestframework==3.16.1
 django-filter==25.2
 Markdown==3.9
 drf-spectacular==0.28.0
+drf-nested-routers==0.95.0

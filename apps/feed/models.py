@@ -212,6 +212,7 @@ class Bookmark(TimeStampedModel):
     )
     post = models.ForeignKey(
         Post,
+        related_name="bookmarks",
         on_delete=models.CASCADE,
         help_text="Bookmarked post.",
     )

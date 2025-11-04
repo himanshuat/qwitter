@@ -68,9 +68,9 @@ class PostSerializer(PostBaseSerializer):
         request = self.context.get("request")
         validated_data["author"] = request.user
 
-        view = self.context.get("view")
-        if view and hasattr(view, "get_object"):
-            validated_data["parent"] = view.get_object()
+        parent_post = self.context.get("parent_post")
+        if parent_post:
+            validated_data["parent"] = parent_post
 
         return super().create(validated_data)
 
@@ -100,7 +100,9 @@ class CommentSerializer(serializers.ModelSerializer):
         The post is inferred from the view's context (nested route).
         """
         request = self.context.get("request")
-        post = self.context["view"].get_object()
+        view = self.context.get("view")
+        post_id = view.kwargs.get("post_id")
+
         validated_data["author"] = request.user
-        validated_data["post"] = post
+        validated_data["post_id"] = post_id
         return super().create(validated_data)
