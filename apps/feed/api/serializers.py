@@ -62,12 +62,16 @@ class PostSerializer(PostBaseSerializer):
 
     def create(self, validated_data):
         """
-        Create a new post and attach the current authenticated user.
-        Validation for reposts, quotes, and originals is handled at the model level.
+        Create a new post authored by the authenticated user.
+        If the post is a quote or repost, the parent post is inferred from the view context.
         """
         request = self.context.get("request")
-        if request and request.user.is_authenticated:
-            validated_data["author"] = request.user
+        validated_data["author"] = request.user
+
+        view = self.context.get("view")
+        if view and hasattr(view, "get_object"):
+            validated_data["parent"] = view.get_object()
+
         return super().create(validated_data)
 
 
