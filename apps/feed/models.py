@@ -120,6 +120,20 @@ class Post(TimeStampedModel):
 	@property
 	def reposts_count(self):
 		return self.reposts.count()
+	
+	@property
+	def type(self) -> str:
+		"""
+		Return the type of post:
+		- 'original' → a standalone post with no parent
+		- 'repost'   → a repost (has a parent, no body)
+		- 'quote'    → a quote post (has a parent and a body)
+		"""
+		if self.is_quote:
+			return "quote"
+		if self.is_repost:
+			return "repost"
+		return "original"
 
 
 class Comment(TimeStampedModel):
