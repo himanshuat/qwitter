@@ -69,3 +69,34 @@ class PostSerializer(PostBaseSerializer):
         if request and request.user.is_authenticated:
             validated_data["author"] = request.user
         return super().create(validated_data)
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    """
+    Serializer for creating and representing comments on posts.
+    """
+
+    author = UserBaseSerializer(read_only=True)
+    post = serializers.IntegerField(source="post.id", read_only=True)
+
+    class Meta:
+        model = Comment
+        fields = (
+            "id",
+            "author",
+            "post",
+            "body",
+            "created_date",
+        )
+        read_only_fields = ("id", "author", "post", "created_date")
+
+    def create(self, validated_data):
+        """
+        Automatically assign the authenticated user and associated post.
+        The post is inferred from the view's context (nested route).
+        """
+        request = self.context.get("request")
+        post = self.context["view"].get_object()
+        validated_data["author"] = request.user
+        validated_data["post"] = post
+        return super().create(validated_data)
