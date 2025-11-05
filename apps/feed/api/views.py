@@ -1,4 +1,5 @@
 from django.db.models import Exists, OuterRef, Value, BooleanField
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
@@ -23,6 +24,11 @@ class PostViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
     pagination_class = QwitterPagination
     lookup_field = "id"
+
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = {
+        "author": ["exact"],
+    }
 
     def get_queryset(self):
         """
