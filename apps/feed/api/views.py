@@ -10,6 +10,7 @@ from apps.core.api.serializers import NoInputSerializer
 from apps.feed.api.serializers import PostSerializer, CommentSerializer
 from apps.core.api.pagination import QwitterPagination
 from apps.core.api.permissions import IsOwnerOrReadOnly
+from apps.feed.api.filters import PostFilter
 
 
 class PostViewSet(viewsets.ModelViewSet):
@@ -26,9 +27,7 @@ class PostViewSet(viewsets.ModelViewSet):
     lookup_field = "id"
 
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = {
-        "author": ["exact"],
-    }
+    filterset_class = PostFilter
 
     def get_queryset(self):
         """
