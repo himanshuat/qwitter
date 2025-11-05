@@ -2,6 +2,7 @@ from django.db.models import Exists, OuterRef, Value, BooleanField
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
+from rest_framework.filters import SearchFilter
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 
@@ -26,8 +27,9 @@ class PostViewSet(viewsets.ModelViewSet):
     pagination_class = QwitterPagination
     lookup_field = "id"
 
-    filter_backends = [DjangoFilterBackend]
+    filter_backends = [DjangoFilterBackend, SearchFilter]
     filterset_class = PostFilter
+    search_fields = ["body", "author__username", "author__name"]
 
     def get_queryset(self):
         """
