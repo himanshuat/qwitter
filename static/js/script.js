@@ -16,6 +16,14 @@ if (themeToggler) {
 }
 
 // Event Listeners
+document.addEventListener("DOMContentLoaded", function () {
+	const toastElements = document.querySelectorAll('.toast');
+	toastElements.forEach(toastElement => {
+		const toast = new bootstrap.Toast(toastElement, { delay: 4000 });
+		setTimeout(() => toast.show(), 200);
+	});
+})
+
 document.querySelectorAll("button.connect").forEach(btn => {
 	btn.addEventListener("click", (e) => {
 		connect(e.target.dataset.username)
