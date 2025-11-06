@@ -3,6 +3,7 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 import json
 
 from apps.accounts.models import User
@@ -18,8 +19,12 @@ def index(request):
 
 @login_required
 def following(request):
-    followed_users = Follow.objects.following(request.user).values_list("followed", flat=True)
-    posts = Post.objects.all().filter(author__in=followed_users).order_by("-created_date")
+    followed_users = Follow.objects.following(request.user).values_list(
+        "followed", flat=True
+    )
+    posts = (
+        Post.objects.all().filter(author__in=followed_users).order_by("-created_date")
+    )
     page_obj = paginate_queryset(request, posts)
     return render(request, "feed/following.html", {"posts_page": page_obj})
 
@@ -76,15 +81,25 @@ def comment(request, post_id):
 @require_POST
 @csrf_exempt
 def connect(request, username):
+    """
+    Follow or unfollow a user.
+    """
     target_user = get_object_or_404(User, username=username)
 
     if target_user == request.user:
-        return JsonResponse({"status": "400", "response": "Cannot follow yourself"})
+        messages.warning(request, "You cannot follow yourself.")
+        return JsonResponse(
+            {"status": "400", "response": "You cannot follow yourself."}
+        )
 
     follow, created = Follow.objects.follow(follower=request.user, followed=target_user)
+
     if not created:
         Follow.objects.unfollow(follower=request.user, followed=target_user)
+        messages.info(request, f"You have unfollowed @{username}.")
         return JsonResponse({"status": "201", "response": "Unfollowed"})
+
+    messages.success(request, f"You are now following @{username}.")
     return JsonResponse({"status": "201", "response": "Followed"})
 
 
@@ -101,18 +116,19 @@ def react(request, post_id):
         Reaction.objects.like(user=request.user, post=post)
         action = "Liked"
 
-    return JsonResponse({
-        "status": "201",
-        "action": action,
-        "postReactionsCount": Reaction.objects.for_post(post).count()
-    })
+    return JsonResponse(
+        {
+            "status": "201",
+            "action": action,
+            "postReactionsCount": Reaction.objects.for_post(post).count(),
+        }
+    )
 
 
 @login_required
 def bookmarks(request):
     bookmarks = (
-        Bookmark.objects
-        .filter(user=request.user)
+        Bookmark.objects.filter(user=request.user)
         .select_related("post")
         .order_by("-created_date")
     )
@@ -120,9 +136,7 @@ def bookmarks(request):
     bookmarked_posts = [bookmark.post for bookmark in bookmarks if bookmark.post]
     page_obj = paginate_queryset(request, bookmarked_posts)
 
-    return render(request, "feed/bookmarks.html", {
-        "posts_page": page_obj
-    })
+    return render(request, "feed/bookmarks.html", {"posts_page": page_obj})
 
 
 @login_required
@@ -154,8 +168,10 @@ def pin_post(request, post_id):
         post.is_pinned = True
 
     post.save()
-    return JsonResponse({
-        "status": "201",
-        "post": f"Pinned post: {post_id}",
-        "username": post.author.username
-    })
+    return JsonResponse(
+        {
+            "status": "201",
+            "post": f"Pinned post: {post_id}",
+            "username": post.author.username,
+        }
+    )
