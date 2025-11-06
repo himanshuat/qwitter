@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from django.http import HttpResponse
 from django.db import IntegrityError
 from django.contrib.auth.decorators import login_required
 
@@ -109,14 +108,85 @@ def settings(request):
 
 @login_required
 def change_email(request):
-    return HttpResponse("change_email")
+    """
+    Allow authenticated users to update their email address.
+    """
+    if request.method == "GET":
+        return render(request, "accounts/change_email.html")
+
+    new_email = request.POST.get("new-email")
+    password = request.POST.get("password")
+
+    if not new_email or not password:
+        messages.warning(request, "Both email and password are required.")
+        return redirect("accounts:change-email")
+
+    if not request.user.check_password(password):
+        messages.error(request, "Incorrect password. Please try again.")
+        return redirect("accounts:change-email")
+
+    if new_email == request.user.email:
+        messages.info(request, "This is already your current email address.")
+        return redirect("accounts:change-email")
+
+    request.user.email = new_email
+    request.user.save()
+
+    messages.success(request, "Email address updated successfully.")
+    return redirect("accounts:settings")
 
 
 @login_required
 def change_password(request):
-    return HttpResponse("change_password")
+    """
+    Allow authenticated users to change their password.
+    """
+    if request.method == "GET":
+        return render(request, "accounts/change_password.html")
+
+    old_password = request.POST.get("old-password")
+    new_password = request.POST.get("new-password")
+
+    if not old_password or not new_password:
+        messages.warning(request, "Both old and new passwords are required.")
+        return redirect("accounts:change-password")
+
+    if not request.user.check_password(old_password):
+        messages.error(request, "Incorrect old password. Please try again.")
+        return redirect("accounts:change-password")
+
+    request.user.set_password(new_password)
+    request.user.save()
+
+    messages.success(request, "Password changed successfully. Please log in again.")
+    return redirect("accounts:logout")
 
 
 @login_required
 def deactivate_account(request):
-    return HttpResponse("deactivate_account")
+    """
+    Deactivate (soft delete) the user's account.
+    """
+    if request.method == "GET":
+        return render(request, "accounts/deactivate_account.html")
+
+    password = request.POST.get("password")
+
+    if not password:
+        messages.warning(request, "Password is required to confirm deactivation.")
+        return redirect("accounts:deactivate-account")
+
+    if not request.user.check_password(password):
+        messages.error(request, "Incorrect password. Please try again.")
+        return redirect("accounts:deactivate-account")
+
+    user = request.user
+    user.is_active = False
+    user.save()
+
+    messages.success(
+        request,
+        f"Your account @{user.username} has been deactivated successfully. "
+        "You can reactivate it later by contacting support.",
+    )
+    return redirect("accounts:logout")
