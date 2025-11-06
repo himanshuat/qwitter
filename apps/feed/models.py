@@ -35,9 +35,21 @@ class Follow(TimeStampedModel):
                 fields=["follower", "followed"], name="unique_follow"
             )
         ]
+        indexes = [
+            models.Index(fields=["follower", "-created_date"]),
+            models.Index(fields=["followed", "-created_date"]),
+        ]
 
     def __str__(self):
         return f"@{self.follower} follows @{self.followed}"
+
+    def clean(self):
+        if self.follower == self.followed:
+            raise ValidationError("Users cannot follow themselves.")
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
 
 
 class Post(TimeStampedModel):
@@ -74,6 +86,11 @@ class Post(TimeStampedModel):
         verbose_name = "Post"
         verbose_name_plural = "Posts"
         ordering = ["-created_date"]
+        indexes = [
+            models.Index(fields=["author", "-created_date"]),
+            models.Index(fields=["parent", "-created_date"]),
+            models.Index(fields=["author", "-is_pinned", "-created_date"]),
+        ]
 
     def __str__(self):
         if self.is_quote:
@@ -104,6 +121,10 @@ class Post(TimeStampedModel):
                 return True
             ancestor = ancestor.parent
         return False
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
 
     @property
     def is_original(self):
@@ -168,6 +189,9 @@ class Comment(TimeStampedModel):
         verbose_name = "Comment"
         verbose_name_plural = "Comments"
         ordering = ["-created_date"]
+        indexes = [
+            models.Index(fields=["post", "-created_date"]),
+        ]
 
     def __str__(self):
         return f"@{self.author} commented: {self.body[:20]}"
@@ -208,13 +232,13 @@ class Bookmark(TimeStampedModel):
         related_name="bookmarks",
         on_delete=models.CASCADE,
         help_text="User who bookmarked the post.",
-        db_index=True,
     )
     post = models.ForeignKey(
         Post,
         related_name="bookmarks",
         on_delete=models.CASCADE,
         help_text="Bookmarked post.",
+        db_index=True,
     )
 
     objects = BookmarkManager()
@@ -225,6 +249,9 @@ class Bookmark(TimeStampedModel):
         ordering = ["-created_date"]
         constraints = [
             models.UniqueConstraint(fields=["user", "post"], name="unique_bookmark")
+        ]
+        indexes = [
+            models.Index(fields=["user", "-created_date"]),
         ]
 
     def __str__(self):
