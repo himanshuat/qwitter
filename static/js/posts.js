@@ -1,111 +1,52 @@
-const themeToggler = document.getElementById('theme-toggler')
-
-// Initialize theme
-if (localStorage.getItem("theme") === null) {
-	localStorage.setItem("theme", "auto")
-}
-
-setTheme()
-
-if (themeToggler) {
-	themeToggler.value = localStorage.getItem("theme")
-	themeToggler.addEventListener("change", () => {
-		localStorage.setItem("theme", themeToggler.value)
-		setTheme()
+export function initPostActions() {
+	document.querySelectorAll("button.like").forEach(btn => {
+		btn.addEventListener("click", () => {
+			react(btn)
+		})
 	})
-}
 
-// Event Listeners
-document.addEventListener("DOMContentLoaded", function () {
-	const toastElements = document.querySelectorAll('.toast');
-	toastElements.forEach(toastElement => {
-		const toast = new bootstrap.Toast(toastElement, { delay: 4000 });
-		setTimeout(() => toast.show(), 200);
-	});
-})
-
-document.querySelectorAll("button.connect").forEach(btn => {
-	btn.addEventListener("click", (e) => {
-		connect(e.target.dataset.username)
+	document.querySelectorAll("button.bookmark").forEach(btn => {
+		btn.addEventListener("click", () => {
+			bookmark(btn)
+		})
 	})
-})
 
-document.querySelectorAll("button.like").forEach(btn => {
-	btn.addEventListener("click", () => {
-		react(btn)
-	})
-})
+	document.querySelectorAll("button.edit").forEach(btn => {
+		btn.addEventListener("click", () => {
+			const postId = btn.dataset.postid;
+			const postEl = document.querySelector(`div.post[data-postid="${postId}"]`);
+			const postContent = postEl.querySelector(".post-content");
+			const postEditForm = postEl.querySelector(".post-edit-form");
 
-document.querySelectorAll("button.bookmark").forEach(btn => {
-	btn.addEventListener("click", () => {
-		bookmark(btn)
-	})
-})
-
-document.querySelectorAll("button.edit").forEach(btn => {
-	btn.addEventListener("click", () => {
-		const postId = btn.dataset.postid;
-		const postEl = document.querySelector(`div.post[data-postid="${postId}"]`);
-		const postContent = postEl.querySelector(".post-content");
-		const postEditForm = postEl.querySelector(".post-edit-form");
-
-		if (postContent.style.display === "none") {
-			postContent.style.display = "block"
-			postEditForm.style.display = "none"
-		}
-		else {
-			postContent.style.display = "none"
-			postEditForm.style.display = "block"
-		}
-	})
-})
-
-document.querySelectorAll(".post-edit-form").forEach(form => {
-	form.addEventListener("submit", (e) => {
-		e.preventDefault()
-		editPost(form)
-	})
-})
-
-document.querySelectorAll("button.delete").forEach(btn => {
-	btn.addEventListener("click", () => {
-		deletePost(btn)
-	})
-})
-
-document.querySelectorAll("button.pin").forEach(btn => {
-	btn.addEventListener("click", () => {
-		pinPost(btn)
-	})
-})
-
-// Functions
-function setTheme() {
-	if (localStorage.getItem("theme") === "light") {
-		document.body.dataset.bsTheme = "light"
-	}
-	else if (localStorage.getItem("theme") === "dark") {
-		document.body.dataset.bsTheme = "dark"
-	}
-	else {
-		document.body.dataset.bsTheme = window.matchMedia('(prefers-color-scheme: light)').matches ? "light" : "dark"
-	}
-}
-
-function connect(username) {
-	fetch(`/feed/profile/${username}/connect/`, { method: 'POST' })
-		.then(res => res.json())
-		.then(res => {
-			if (res.status === "401") {
-				window.location.href = window.location.origin + "/login"
-			}
-			else if (res.status === "404") {
-				alert(res.response)
+			if (postContent.style.display === "none") {
+				postContent.style.display = "block"
+				postEditForm.style.display = "none"
 			}
 			else {
-				location.reload()
+				postContent.style.display = "none"
+				postEditForm.style.display = "block"
 			}
 		})
+	})
+
+	document.querySelectorAll(".post-edit-form").forEach(form => {
+		form.addEventListener("submit", (e) => {
+			e.preventDefault()
+			editPost(form)
+		})
+	})
+
+	document.querySelectorAll("button.delete").forEach(btn => {
+		btn.addEventListener("click", () => {
+			deletePost(btn)
+		})
+	})
+
+	document.querySelectorAll("button.pin").forEach(btn => {
+		btn.addEventListener("click", () => {
+			pinPost(btn)
+		})
+	})
 }
 
 function react(el) {
