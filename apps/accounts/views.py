@@ -1,9 +1,11 @@
 from django.conf import settings
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from django.db import IntegrityError
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
+from django.shortcuts import render, redirect, get_object_or_404
+from django.db import IntegrityError
 
 from .models import User
 from apps.feed.models import Post
@@ -49,14 +51,27 @@ def register(request):
         return redirect("feed:index")
 
     if request.method == "POST":
-        username = request.POST.get("username", "").lower()
-        email = request.POST.get("email", "")
+        username = request.POST.get("username", "").strip().lower()
+        email = request.POST.get("email", "").strip().lower()
         password = request.POST.get("password", "")
         confirmation = request.POST.get("confirmation", "")
-        name = request.POST.get("name", "")
+        name = request.POST.get("name", "").strip()
+
+        if not all([username, email, password, confirmation, name]):
+            messages.error(request, "All fields are required.")
+            return render(request, "accounts/register.html")
 
         if password != confirmation:
-            messages.warning(request, "Passwords do not match.")
+            messages.error(request, "Passwords do not match.")
+            return render(request, "accounts/register.html")
+
+        try:
+            validate_password(
+                password, user=User(username=username, email=email, name=name)
+            )
+        except ValidationError as e:
+            for error in e.messages:
+                messages.error(request, error)
             return render(request, "accounts/register.html")
 
         try:
@@ -65,11 +80,13 @@ def register(request):
             )
             login(request, user)
             messages.success(
-                request, "Registration successful. Please complete your profile."
+                request, "Welcome! Your account has been created successfully."
             )
             return redirect("accounts:edit_profile")
         except IntegrityError:
-            messages.error(request, "Username or email already taken.")
+            messages.error(
+                request, "An account with this username or email already exists."
+            )
             return render(request, "accounts/register.html")
 
     return render(request, "accounts/register.html")

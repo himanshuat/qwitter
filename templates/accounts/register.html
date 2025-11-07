@@ -1,40 +1,71 @@
 {% extends "core/base.html" %}
 
-{% block title %}Register{% endblock %}
+{% block title %}Create Your Account{% endblock %}
 
 {% block body %}
 
 <section class="p-4 h-100 d-flex flex-column gap-2 align-items-center justify-content-center">
-	<form class="bg-primary-clr rounded shadow-sm rounded-2 p-4 d-flex flex-column gap-2"
-		action="{% url 'accounts:register' %}" method="post" style="width: min(400px, 90%);">
-		<h2 class="text-primary-emphasis text-center">Register</h2>
+	<form class="bg-primary-clr rounded shadow-sm rounded-2 p-4" action="{% url 'accounts:register' %}" method="post"
+		style="width: min(600px, 90%);">
+		<h2 class="text-primary-emphasis text-center mb-1">Join Us Today</h2>
+		<p class="text-muted text-center mb-4">Create your account to get started</p>
+
 		{% csrf_token %}
-		<div class="form-group">
-			<label for="username" class="form-label">Username</label>
-			<input autofocus class="form-control" type="text" name="username" id="username"
-				placeholder="Eg: harrypotter">
+
+		<div class="row g-3">
+			<!-- Full Name - Full Width -->
+			<div class="col-12">
+				<div class="form-group">
+					<label for="name" class="form-label">Full Name</label>
+					<input autofocus class="form-control" type="text" name="name" id="name"
+						placeholder="Enter your full name" required>
+				</div>
+			</div>
+
+			<!-- Left Column -->
+			<div class="col-md-6">
+				<div class="form-group">
+					<label for="username" class="form-label">Username</label>
+					<input class="form-control" type="text" name="username" id="username"
+						placeholder="Choose a username" required>
+				</div>
+
+				<div class="form-group">
+					<label for="password" class="form-label">Password</label>
+					<input class="form-control" type="password" name="password" id="password"
+						placeholder="Enter your password" required>
+				</div>
+			</div>
+
+			<!-- Right Column -->
+			<div class="col-md-6">
+				<div class="form-group">
+					<label for="email" class="form-label">Email Address</label>
+					<input class="form-control" type="email" name="email" id="email"
+						placeholder="your.email@example.com" required>
+				</div>
+
+				<div class="form-group">
+					<label for="confirmation" class="form-label">Confirm Password</label>
+					<input class="form-control" type="password" name="confirmation" id="confirmation"
+						placeholder="Confirm your password" required>
+				</div>
+			</div>
 		</div>
-		<div class="form-group">
-			<label for="name" class="form-label">Name</label>
-			<input autofocus class="form-control" type="text" name="name" id="name" placeholder="Eg: harrypotter">
+
+		<!-- Full width submit button -->
+		<div class="mt-4">
+			<input class="btn btn-accent w-100" type="submit" value="Create Account">
 		</div>
-		<div class="form-group">
-			<label for="email" class="form-label">Email</label>
-			<input class="form-control" type="email" name="email" id="email" placeholder="harrypotter@hogwarts.com">
+
+		<div class="text-center mt-3">
+			<small class="text-muted">
+				Already have an account?
+				<a class="text-accent text-decoration-none" href="{% url 'accounts:login' %}">
+					Sign In here
+				</a>
+			</small>
 		</div>
-		<div class="form-group">
-			<label for="password" class="form-label">Password</label>
-			<input class="form-control" type="password" name="password" id="password" placeholder="Password">
-		</div>
-		<div class="form-group">
-			<label for="confirmation" class="form-label">Confirm Password</label>
-			<input class="form-control" type="password" name="confirmation" id="confirmation"
-				placeholder="Confirm Password">
-		</div>
-		<input class="btn btn-accent mt-2" type="submit" value="Register">
-		<small class="text-center">
-			Already have an account? <a class="text-accent" href="{% url 'accounts:login' %}">Log In</a>.
-		</small>
 	</form>
 </section>
 
