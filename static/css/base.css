@@ -4,6 +4,7 @@
 	--accent-dark: #14705f;
 
 	--like: #FB2576;
+	--repost: #D97706;
 	--comment: #FFAB31;
 	--bookmark: #0071F2;
 	--edit: #64BC26;
@@ -80,6 +81,10 @@ a {
 
 .liked {
 	color: var(--like);
+}
+
+.reposted {
+	color: var(--repost);
 }
 
 .bookmarked {

@@ -5,6 +5,12 @@ export function initPostActions() {
 		})
 	})
 
+	document.querySelectorAll("button.repost").forEach(btn => {
+		btn.addEventListener("click", () => {
+			repost(btn)
+		})
+	})
+
 	document.querySelectorAll("button.bookmark").forEach(btn => {
 		btn.addEventListener("click", () => {
 			bookmark(btn)
@@ -67,6 +73,23 @@ function react(el) {
 				else {
 					el.innerHTML = `<i class="fa-regular fa-heart"></i> <span class="ml-1">${res.postReactionsCount}</span>`
 				}
+			}
+		})
+}
+
+function repost(el) {
+	const postId = parseInt(el.dataset.postid)
+	fetch(`/feed/posts/${postId}/repost/`, { method: 'POST' })
+		.then(res => res.json())
+		.then(res => {
+			if (res.status === "401") {
+				window.location.href = window.location.origin + "/login"
+			}
+			else if (res.status === "404") {
+				alert(res.response)
+			}
+			else {
+				window.location.href = window.location.origin + `/feed/posts/${postId}/`
 			}
 		})
 }

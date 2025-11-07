@@ -50,6 +50,37 @@ def new_post(request):
 @login_required
 @require_POST
 @csrf_exempt
+def repost(request, post_id):
+    """Create a pure repost (no body)."""
+    post = get_object_or_404(Post, pk=post_id)
+
+    if post.is_repost:
+        messages.error(request, "Cannot repost a repost.")
+        return redirect("feed:post", post_id=post_id)
+
+    repost, created = Post.objects.get_or_create(
+        author=request.user, parent=post, body=""
+    )
+
+    if not created:
+        repost.delete()
+        action = "Reposted"
+        messages.success(request, "Repost removed successfully.")
+    else:
+        action = "Repost removed"
+        messages.success(request, "Post reposted successfully.")
+
+    return JsonResponse(
+        {
+            "status": "201",
+            "action": action,
+        }
+    )
+
+
+@login_required
+@require_POST
+@csrf_exempt
 def edit_post(request, post_id):
     post = get_object_or_404(Post, pk=post_id, author=request.user)
     data = json.loads(request.body)

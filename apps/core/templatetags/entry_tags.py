@@ -2,9 +2,15 @@ from django import template
 
 register = template.Library()
 
+
 @register.filter
 def has_liked(user, post):
     return user.is_authenticated and user.reactions.filter(post=post).exists()
+
+
+@register.filter
+def has_reposted(user, post):
+    return user.is_authenticated and user.posts.filter(parent=post, body="").exists()
 
 
 @register.filter
