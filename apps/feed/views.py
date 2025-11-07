@@ -43,6 +43,7 @@ def new_post(request):
     body = request.POST.get("body", "").strip()
     if body:
         post = Post.objects.create(author=request.user, body=body)
+        messages.success(request, "Post shared successfully.")
         return redirect("feed:post", post_id=post.id)
     return redirect("feed:index")
 
@@ -52,11 +53,16 @@ def new_post(request):
 @csrf_exempt
 def repost(request, post_id):
     """Create a pure repost (no body)."""
-    post = get_object_or_404(Post, pk=post_id)
 
+    post = get_object_or_404(Post, id=post_id)
     if post.is_repost:
-        messages.error(request, "Cannot repost a repost.")
-        return redirect("feed:post", post_id=post_id)
+        messages.warning(request, "Cannot repost a repost. Use the original post.")
+        return JsonResponse(
+            {
+                "status": "400",
+                "error": "Cannot repost a repost. Use the original post.",
+            },
+        )
 
     repost, created = Post.objects.get_or_create(
         author=request.user, parent=post, body=""
@@ -76,6 +82,28 @@ def repost(request, post_id):
             "action": action,
         }
     )
+
+
+@login_required
+def quote(request, post_id):
+    """Create a quote post (with body)."""
+
+    post = get_object_or_404(Post, id=post_id)
+    if post.is_repost:
+        messages.error(request, "Cannot quote a repost.")
+        return redirect("feed:post", post_id=post_id)
+
+    if request.method == "GET":
+        return render(request, "feed/new_quote.html", {"parent_post": post})
+
+    body = request.POST.get("body", "").strip()
+    if body:
+        quote_post = Post.objects.create(author=request.user, parent=post, body=body)
+        messages.success(request, "Quote shared successfully.")
+        return redirect("feed:post", post_id=quote_post.id)
+
+    messages.warning(request, "Quote body cannot be empty.")
+    return redirect("feed:quote", post_id=post_id)
 
 
 @login_required

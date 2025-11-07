@@ -10,9 +10,9 @@
 			<i class="fa-regular fa-heart"></i> {{ post.reactions_count }}
 			{% endif %}
 		</button>
-		<button data-postid="{{ post.pk }}" class="quote btn btn-sm flex-grow-1 rounded-0">
+		<a class="quote btn btn-sm flex-grow-1 rounded-0" href="{% url 'feed:quote' post.id %}">
 			<i class="hgi hgi-stroke hgi-edit-02 me-1"></i> {{ post.quotes_count }}
-		</button>
+		</a>
 		<button data-postid="{{ post.pk }}" class="repost btn btn-sm flex-grow-1 rounded-0">
 			{% if user|has_reposted:post %}
 			<i class="fa-solid fa-retweet reposted"></i> {{ post.reposts_count }}

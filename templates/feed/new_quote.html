@@ -1,0 +1,29 @@
+{% extends "core/base.html" %}
+
+{% block title %}New Quote{% endblock %}
+
+{% block body %}
+<section class="container p-4">
+    <h2 class="text-primary-emphasis text-center mb-4">New Quote</h2>
+    <form class="d-block mx-auto" action="{% url 'feed:quote' parent_post.id %}" method="post">
+        {% csrf_token %}
+        <div class="p-3 border rounded-3">
+            <div class="form-floating">
+                <textarea class="form-control bg-primary-clr border-0 shadow-none" name="body" id="body"
+                    style="height: 25vh; resize: none;" maxlength="280" autofocus required
+                    placeholder="Add your thoughts..."></textarea>
+                <label for="body">Add your thoughts...</label>
+            </div>
+            <div class="bg-primary-clr p-3 rounded-2 mt-3">
+                {% include "components/postheader.html" with post=parent_post %}
+                <p class="post-content bg-secondary-clr mt-3 mb-0 p-3 rounded-2">
+                    {{ parent_post.body }}
+                </p>
+            </div>
+        </div>
+        <div class="mt-3">
+            <button type="submit" class="btn btn-accent w-100">Share Quote</button>
+        </div>
+    </form>
+</section>
+{% endblock %}
