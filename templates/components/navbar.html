@@ -67,7 +67,7 @@
 		</a>
 		{% else %}
 		<a class="text-accent-dark fs-5" href="{% url 'accounts:login' %}">
-			<i class="far fa-user-circle"></i> <strong>Guest</strong>
+			<i class="fa-regular fa-circle-user"></i> <strong>Guest</strong>
 		</a>
 		{% endif %}
 	</div>
@@ -89,13 +89,13 @@
 		</a>
 		{% else %}
 		<a class="text-accent-dark fs-5" href="{% url 'accounts:login' %}">
-			<i class="far fa-user-circle"></i> <strong class="fw-medium">Guest</strong>
+			<i class="fa-regular fa-circle-user"></i> <strong class="fw-medium">Guest</strong>
 		</a>
 		{% endif %}
 	</div>
 	<div class="dropdown">
 		<button class="btn p-0 text-accent" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-			<i class="fas fa-bars fa-lg"></i>
+			<i class="fa-solid fa-bars fa-lg"></i>
 		</button>
 		<ul class="dropdown-menu">
 			<li><a class="dropdown-item" href="{% url 'feed:index' %}">Home</a></li>

@@ -5,20 +5,23 @@
 	<div class="post-actions btn-group w-100">
 		<button data-postid="{{ post.pk }}" class="like btn btn-sm flex-grow-1 rounded-0">
 			{% if user|has_liked:post %}
-			<i class="fas fa-heart"></i> {{ post.reactions_count }}
+			<i class="fa-solid fa-heart"></i> {{ post.reactions_count }}
 			{% else %}
-			<i class="far fa-heart"></i> {{ post.reactions_count }}
+			<i class="fa-regular fa-heart"></i> {{ post.reactions_count }}
 			{% endif %}
+		</button>
+		<button data-postid="{{ post.pk }}" class="repost btn btn-sm flex-grow-1 rounded-0">
+			<i class="fa-solid fa-retweet"></i> {{ post.reposts_count }}
 		</button>
 		<button data-postid="{{ post.pk }}" data-bs-toggle="modal" data-bs-target="#post{{ post.pk }}commentform"
 			class="comment btn btn-sm flex-grow-1 rounded-0">
-			<i class="far fa-comment-alt"></i> <span class="ml-1">{{ post.comments_count }}</span>
+			<i class="fa-regular fa-message"></i> <span class="ml-1">{{ post.comments_count }}</span>
 		</button>
 		<button data-postid="{{ post.pk }}" class="bookmark btn btn-sm flex-grow-1 rounded-0">
 			{% if user|has_bookmarked:post %}
-			<i class="fas fa-bookmark"></i>
+			<i class="fa-solid fa-bookmark"></i>
 			{% else %}
-			<i class="far fa-bookmark"></i>
+			<i class="fa-regular fa-bookmark"></i>
 			{% endif %}
 		</button>
 	</div>

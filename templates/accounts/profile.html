@@ -13,10 +13,10 @@
 			<a class="text-accent fs-5" href="{% url 'accounts:profile' profile_user %}">@{{ profile_user }}</a>
 			<p class="text-secondary fw-medium d-flex flex-md-column justify-content-between gap-1 my-2">
 				<small>
-					<i class="fas fa-birthday-cake"></i> Born {{ profile_user.dob|date:"M d, Y" }}
+					<i class="fa-solid fa-cake-candles"></i> Born {{ profile_user.dob|date:"M d, Y" }}
 				</small>
 				<small>
-					<i class="fas fa-calendar-alt"></i> Joined {{ profile_user.date_joined|date:"M d, Y" }}
+					<i class="fa-regular fa-calendar-plus"></i> Joined {{ profile_user.date_joined|date:"M d, Y" }}
 				</small>
 			</p>
 			<div class="my-2">

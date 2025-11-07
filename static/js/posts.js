@@ -62,10 +62,10 @@ function react(el) {
 			}
 			else {
 				if (res.action == "Liked") {
-					el.innerHTML = `<i class="fas fa-heart"></i> <span class="ml-1">${res.postReactionsCount}</span>`
+					el.innerHTML = `<i class="fa-solid fa-heart"></i> <span class="ml-1">${res.postReactionsCount}</span>`
 				}
 				else {
-					el.innerHTML = `<i class="far fa-heart"></i> <span class="ml-1">${res.postReactionsCount}</span>`
+					el.innerHTML = `<i class="fa-regular fa-heart"></i> <span class="ml-1">${res.postReactionsCount}</span>`
 				}
 			}
 		})
@@ -84,10 +84,10 @@ function bookmark(el) {
 			}
 			else {
 				if (res.action == "Bookmarked") {
-					el.innerHTML = `<i class="fas fa-bookmark"></i>`
+					el.innerHTML = `<i class="fa-solid fa-bookmark"></i>`
 				}
 				else {
-					el.innerHTML = `<i class="far fa-bookmark"></i>`
+					el.innerHTML = `<i class="fa-regular fa-bookmark"></i>`
 				}
 			}
 		})

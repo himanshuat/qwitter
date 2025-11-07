@@ -1,7 +1,7 @@
 {% load static %}
 
 {% if post.is_pinned %}
-<p class="post-pinned text-accent"><i class="fas fa-thumbtack"></i> Pinned</p>
+<p class="post-pinned text-accent"><i class="fa-solid fa-thumbtack"></i> Pinned</p>
 {% endif %}
 <div class="post-header">
 	<a href="{% url 'accounts:profile' post.author %}">
@@ -18,25 +18,25 @@
 
 	{% if user == post.author %}
 	<div class="ms-auto dropstart">
-		<button class="btn btn-sm" data-bs-toggle="dropdown"><i class="fas fa-ellipsis-v"></i></button>
+		<button class="btn btn-sm" data-bs-toggle="dropdown"><i class="fa-solid fa-ellipsis-vertical"></i></button>
 		<ul class="post-actions dropdown-menu">
 			<li>
 				<button data-postid="{{ post.pk }}" class="pin dropdown-item btn btn-sm">
-					{% if post.ispinned %}
-					<i class="fas fa-thumbtack"></i> Unpin from Profile
+					{% if post.is_pinned %}
+					<i class="fa-solid fa-thumbtack-slash"></i> Unpin from Profile
 					{% else %}
-					<i class="fas fa-thumbtack"></i> Pin to Profile
+					<i class="fa-solid fa-thumbtack"></i> Pin to Profile
 					{% endif %}
 				</button>
 			</li>
 			<li>
 				<button data-postid="{{ post.pk }}" class="edit dropdown-item btn btn-sm">
-					<i class="far fa-edit"></i> Edit Post
+					<i class="fa-regular fa-pen-to-square"></i> Edit Post
 				</button>
 			</li>
 			<li>
 				<button data-postid="{{ post.pk }}" class="delete dropdown-item btn btn-sm">
-					<i class="far fa-trash-alt"></i> Delete Post
+					<i class="fa-solid fa-trash-can"></i> Delete Post
 				</button>
 			</li>
 		</ul>
