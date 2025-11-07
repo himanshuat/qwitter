@@ -113,10 +113,10 @@ def edit_profile(request):
     user = request.user
 
     if request.method == "POST":
-        user.name = request.POST.get("name", "").strip()
-        user.image = request.POST.get("image", "").strip()
+        user.name = request.POST.get("name", "").strip() or user.name
+        user.image = request.POST.get("image", "").strip() or None
         user.dob = request.POST.get("dob") or None
-        user.bio = request.POST.get("bio", "").strip()
+        user.bio = request.POST.get("bio", "").strip() or None
         user.save()
 
         messages.success(request, "Profile updated successfully.")

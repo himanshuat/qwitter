@@ -1,32 +1,37 @@
 {% extends "core/base.html" %}
 
-{% block title %}Update Profile{% endblock %}
+{% block title %}Edit Profile{% endblock %}
 
 {% block body %}
 <section class="container p-4">
-	<h2 class="text-primary-emphasis">Edit Profile: {{ user }}</h2>
-	<form class="row d-flex flex-column gap-4 py-2" action="{% url 'accounts:edit_profile' %}" method="post">
+	<h2 class="text-primary-emphasis mb-4">Update Your Profile</h2>
+	<form class="d-flex flex-column gap-4" action="{% url 'accounts:edit_profile' %}" method="post">
 		{% csrf_token %}
-		<div class="col-12">
-			<label for="name" class="form-label">Name</label>
-			<input type="text" maxlength="200" class="form-control" name="name" id="name" value="{{ user.name }}"
-				placeholder="E.g: John Smith" required>
+
+		<div class="form-group">
+			<label for="name" class="form-label">Display Name</label>
+			<input type="text" maxlength="200" class="form-control" name="name" id="name"
+				value="{{ user.name|default:'' }}" placeholder="Enter your display name" required>
 		</div>
-		<div class="col-12">
-			<label for="image" class="form-label">Avatar</label>
-			<input type="url" class="form-control" name="image" id="image" value="{{ user.image }}"
-				placeholder="Eg: http://www.example.com/me.jpg" required>
+
+		<div class="form-group">
+			<label for="image" class="form-label">Profile Picture URL</label>
+			<input type="url" class="form-control" name="image" id="image" value="{{ user.image|default:'' }}"
+				placeholder="https://example.com/your-photo.jpg">
 		</div>
-		<div class="col-12">
-			<label for="dob" class="form-label">Birthday</label>
-			<input type="date" class="form-control" name="dob" id="dob" value='{{ user.dob|date:"Y-m-d" }}' required>
+
+		<div class="form-group">
+			<label for="dob" class="form-label">Date of Birth</label>
+			<input type="date" class="form-control" name="dob" id="dob" value="{{ user.dob|date:'Y-m-d'|default:'' }}">
 		</div>
-		<div class="col-12">
-			<label for="bio" class="form-label">Bio</label>
-			<textarea class="form-control" name="bio" id="bio" rows="5"
-				placeholder="Something about yourself">{{ user.bio }}</textarea>
+
+		<div class="form-group">
+			<label for="bio" class="form-label">About Me</label>
+			<textarea class="form-control" name="bio" id="bio" rows="4" placeholder="Tell us a bit about yourself"
+				style="resize: none;">{{ user.bio|default:'' }}</textarea>
 		</div>
-		<div class="col-12">
+
+		<div class="form-group">
 			<button type="submit" class="btn btn-accent w-100">Save Profile</button>
 		</div>
 	</form>
