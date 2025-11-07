@@ -4,7 +4,7 @@
 
 {% block body %}
 <section class="container p-4">
-    <h2 class="text-primary-emphasis text-center mb-4">New Quote</h2>
+    <h2 class="text-primary-emphasis mb-4">Share your perspective</h2>
     <form class="d-block mx-auto" action="{% url 'feed:quote' parent_post.id %}" method="post">
         {% csrf_token %}
         <div class="p-3 border rounded-3">
