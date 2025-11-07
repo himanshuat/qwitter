@@ -48,11 +48,15 @@ def new_post(request):
     return redirect("feed:index")
 
 
-@login_required
 @require_POST
 @csrf_exempt
 def repost(request, post_id):
     """Create a pure repost (no body)."""
+
+    if not request.user.is_authenticated:
+        return JsonResponse(
+            {"status": "401", "response": "Log in to perform this action"}
+        )
 
     post = get_object_or_404(Post, id=post_id)
     if post.is_repost:
@@ -106,10 +110,14 @@ def quote(request, post_id):
     return redirect("feed:quote", post_id=post_id)
 
 
-@login_required
 @require_POST
 @csrf_exempt
 def edit_post(request, post_id):
+    if not request.user.is_authenticated:
+        return JsonResponse(
+            {"status": "401", "response": "Log in to perform this action"}
+        )
+
     post = get_object_or_404(Post, pk=post_id, author=request.user)
     data = json.loads(request.body)
     post.body = data.get("body", "")
@@ -117,10 +125,14 @@ def edit_post(request, post_id):
     return JsonResponse({"status": "201", "postContent": post.body})
 
 
-@login_required
 @require_POST
 @csrf_exempt
 def delete_post(request, post_id):
+    if not request.user.is_authenticated:
+        return JsonResponse(
+            {"status": "401", "response": "Log in to perform this action"}
+        )
+
     post = get_object_or_404(Post, pk=post_id, author=request.user)
     post.delete()
     return JsonResponse({"status": "201", "action": f"Deleted post: {post_id}"})
@@ -141,15 +153,18 @@ def comment(request, post_id):
     return redirect("feed:post", post_id=post_id)
 
 
-@login_required
 @require_POST
 @csrf_exempt
 def connect(request, username):
     """
     Follow or unfollow a user.
     """
-    target_user = get_object_or_404(User, username=username)
+    if not request.user.is_authenticated:
+        return JsonResponse(
+            {"status": "401", "response": "Log in to perform this action"}
+        )
 
+    target_user = get_object_or_404(User, username=username)
     if target_user == request.user:
         messages.warning(request, "You cannot follow yourself.")
         return JsonResponse(
@@ -167,12 +182,15 @@ def connect(request, username):
     return JsonResponse({"status": "201", "response": "Followed"})
 
 
-@login_required
 @require_POST
 @csrf_exempt
 def react(request, post_id):
-    post = get_object_or_404(Post, pk=post_id)
+    if not request.user.is_authenticated:
+        return JsonResponse(
+            {"status": "401", "response": "Log in to perform this action"}
+        )
 
+    post = get_object_or_404(Post, pk=post_id)
     if post.is_repost:
         return JsonResponse(
             {
@@ -212,12 +230,15 @@ def bookmarks(request):
     return render(request, "feed/bookmarks.html", {"posts_page": page_obj})
 
 
-@login_required
 @require_POST
 @csrf_exempt
 def bookmark(request, post_id):
-    post = get_object_or_404(Post, pk=post_id)
+    if not request.user.is_authenticated:
+        return JsonResponse(
+            {"status": "401", "response": "Log in to perform this action"}
+        )
 
+    post = get_object_or_404(Post, pk=post_id)
     if post.is_repost:
         return JsonResponse(
             {
@@ -237,12 +258,15 @@ def bookmark(request, post_id):
     return JsonResponse({"status": "201", "action": action})
 
 
-@login_required
 @require_POST
 @csrf_exempt
 def pin_post(request, post_id):
-    post = get_object_or_404(Post, pk=post_id, author=request.user)
+    if not request.user.is_authenticated:
+        return JsonResponse(
+            {"status": "401", "response": "Log in to perform this action"}
+        )
 
+    post = get_object_or_404(Post, pk=post_id, author=request.user)
     if post.is_repost:
         return JsonResponse(
             {

@@ -137,6 +137,10 @@ TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
 
+LOGIN_URL = "accounts:login"
+LOGIN_REDIRECT_URL = "feed:index"
+LOGOUT_REDIRECT_URL = "feed:index"
+
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]

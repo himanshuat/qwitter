@@ -11,7 +11,7 @@ urlpatterns = [
     path("register/", views.register, name="register"),
     path("profile/edit/", views.edit_profile, name="edit_profile"),
     path("profile/<str:username>/", views.profile, name="profile"),
-    path("settings/", views.settings, name="settings"),
+    path("settings/", views.account_settings, name="settings"),
     path("settings/change-email", views.change_email, name="change-email"),
     path("settings/change-password", views.change_password, name="change-password"),
     path(

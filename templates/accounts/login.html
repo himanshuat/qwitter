@@ -9,6 +9,9 @@
 		action="{% url 'accounts:login' %}" method="post" style="width: min(400px, 90%);">
 		<h2 class="text-primary-emphasis text-center">Login</h2>
 		{% csrf_token %}
+		{% if request.GET.next %}
+		<input type="hidden" name="next" value="{{ request.GET.next }}">
+		{% endif %}
 		<div class="form-group">
 			<label for="username" class="form-label">Username</label>
 			<input autofocus class="form-control" type="text" name="username" id="username">

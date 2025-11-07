@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
@@ -17,25 +18,30 @@ def login_view(request):
     if request.user.is_authenticated:
         return redirect("feed:index")
 
-    if request.method == "POST":
-        username = request.POST.get("username", "").lower()
-        password = request.POST.get("password", "")
-        user = authenticate(request, username=username, password=password)
+    if request.method == "GET":
+        return render(request, "accounts/login.html")
 
-        if user:
-            login(request, user)
-            messages.success(request, "Logged in successfully.")
-            return redirect("feed:index")
-        else:
-            messages.error(request, "Invalid username or password.")
+    username = request.POST.get("username", "").lower()
+    password = request.POST.get("password", "")
+    user = authenticate(request, username=username, password=password)
 
-    return render(request, "accounts/login.html")
+    if user:
+        login(request, user)
+        messages.success(request, "Logged in successfully.")
+
+        next_url = request.POST.get("next") or request.GET.get("next")
+        if next_url:
+            return redirect(next_url)
+        return redirect(settings.LOGIN_REDIRECT_URL)
+    else:
+        messages.error(request, "Invalid username or password.")
+        return redirect(settings.LOGIN_REDIRECT_URL)
 
 
 def logout_view(request):
     logout(request)
     messages.info(request, "You've been logged out.")
-    return redirect("feed:index")
+    return redirect(settings.LOGOUT_REDIRECT_URL)
 
 
 def register(request):
@@ -102,7 +108,7 @@ def edit_profile(request):
     return render(request, "accounts/edit_profile.html")
 
 
-def settings(request):
+def account_settings(request):
     return render(request, "accounts/settings.html")
 
 
