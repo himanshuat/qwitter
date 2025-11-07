@@ -62,7 +62,7 @@ function react(el) {
 			}
 			else {
 				if (res.action == "Liked") {
-					el.innerHTML = `<i class="fa-solid fa-heart"></i> <span class="ml-1">${res.postReactionsCount}</span>`
+					el.innerHTML = `<i class="fa-solid fa-heart liked"></i> <span class="ml-1">${res.postReactionsCount}</span>`
 				}
 				else {
 					el.innerHTML = `<i class="fa-regular fa-heart"></i> <span class="ml-1">${res.postReactionsCount}</span>`
@@ -84,7 +84,7 @@ function bookmark(el) {
 			}
 			else {
 				if (res.action == "Bookmarked") {
-					el.innerHTML = `<i class="fa-solid fa-bookmark"></i>`
+					el.innerHTML = `<i class="fa-solid fa-bookmark bookmarked"></i>`
 				}
 				else {
 					el.innerHTML = `<i class="fa-regular fa-bookmark"></i>`

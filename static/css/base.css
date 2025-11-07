@@ -69,28 +69,21 @@ a {
 	background-color: var(--accent-light);
 }
 
-.like i {
+.navbar-nav .hgi {
+	font-size: 25px;
+	font-weight: 400;
+}
+
+.hgi {
+	font-weight: 600;
+}
+
+.liked {
 	color: var(--like);
 }
 
-.comment i {
-	color: var(--comment);
-}
-
-.bookmark i {
+.bookmarked {
 	color: var(--bookmark);
-}
-
-.edit i {
-	color: var(--edit);
-}
-
-.delete i {
-	color: var(--delete);
-}
-
-.pin i {
-	color: var(--pin);
 }
 
 /* Main */

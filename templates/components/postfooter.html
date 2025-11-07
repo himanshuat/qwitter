@@ -5,7 +5,7 @@
 	<div class="post-actions btn-group w-100">
 		<button data-postid="{{ post.pk }}" class="like btn btn-sm flex-grow-1 rounded-0">
 			{% if user|has_liked:post %}
-			<i class="fa-solid fa-heart"></i> {{ post.reactions_count }}
+			<i class="fa-solid fa-heart liked"></i> {{ post.reactions_count }}
 			{% else %}
 			<i class="fa-regular fa-heart"></i> {{ post.reactions_count }}
 			{% endif %}
@@ -13,13 +13,16 @@
 		<button data-postid="{{ post.pk }}" class="repost btn btn-sm flex-grow-1 rounded-0">
 			<i class="fa-solid fa-retweet"></i> {{ post.reposts_count }}
 		</button>
+		<button data-postid="{{ post.pk }}" class="quote btn btn-sm flex-grow-1 rounded-0">
+			<i class="hgi hgi-stroke hgi-edit-02 me-1"></i> {{ post.quotes_count }}
+		</button>
 		<button data-postid="{{ post.pk }}" data-bs-toggle="modal" data-bs-target="#post{{ post.pk }}commentform"
 			class="comment btn btn-sm flex-grow-1 rounded-0">
 			<i class="fa-regular fa-message"></i> <span class="ml-1">{{ post.comments_count }}</span>
 		</button>
 		<button data-postid="{{ post.pk }}" class="bookmark btn btn-sm flex-grow-1 rounded-0">
 			{% if user|has_bookmarked:post %}
-			<i class="fa-solid fa-bookmark"></i>
+			<i class="fa-solid fa-bookmark bookmarked"></i>
 			{% else %}
 			<i class="fa-regular fa-bookmark"></i>
 			{% endif %}
