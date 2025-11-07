@@ -91,6 +91,13 @@ class Post(TimeStampedModel):
             models.Index(fields=["parent", "-created_date"]),
             models.Index(fields=["author", "-is_pinned", "-created_date"]),
         ]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["author", "parent"],
+                condition=models.Q(body="") | models.Q(body__isnull=True),
+                name="unique_repost_per_user",
+            )
+        ]
 
     def __str__(self):
         if self.is_quote:
@@ -106,6 +113,16 @@ class Post(TimeStampedModel):
                 raise ValidationError("Post cannot reference itself as parent.")
             if self._creates_loop():
                 raise ValidationError("Post repost/quote chain cannot form a loop.")
+
+        if self.parent.is_repost:
+            raise ValidationError(
+                "Cannot repost or quote a repost. Only posts and quotes can be reposted/quoted."
+            )
+
+        if self.is_pinned and self.is_repost:
+            raise ValidationError(
+                "Cannot pin a repost. Only posts and quotes can be pinned."
+            )
 
         has_parent = bool(self.parent)
         has_body = bool(self.body and str(self.body).strip())
@@ -200,6 +217,16 @@ class Comment(TimeStampedModel):
     def __str__(self):
         return f"@{self.author} commented: {self.body[:20]}"
 
+    def clean(self):
+        if self.post and self.post.is_repost:
+            raise ValidationError(
+                "Cannot comment on a repost. Comments are only allowed on posts and quotes."
+            )
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
+
 
 class Reaction(TimeStampedModel):
     user = models.ForeignKey(
@@ -228,6 +255,16 @@ class Reaction(TimeStampedModel):
 
     def __str__(self):
         return f"@{self.user} liked post #{self.post.id}"
+
+    def clean(self):
+        if self.post and self.post.is_repost:
+            raise ValidationError(
+                "Cannot react to a repost. Reactions are only allowed on posts and quotes."
+            )
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
 
 
 class Bookmark(TimeStampedModel):
@@ -260,3 +297,13 @@ class Bookmark(TimeStampedModel):
 
     def __str__(self):
         return f"@{self.user} bookmarked post #{self.post.id}"
+
+    def clean(self):
+        if self.post and self.post.is_repost:
+            raise ValidationError(
+                "Cannot bookmark a repost. Bookmarks are only allowed on posts and quotes."
+            )
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)

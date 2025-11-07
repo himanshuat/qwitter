@@ -71,6 +71,11 @@ def delete_post(request, post_id):
 @require_POST
 def comment(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
+
+    if post.is_repost:
+        messages.error(request, "Cannot comment on a repost.")
+        return redirect("feed:post", post_id=post_id)
+
     body = request.POST.get("body", "").strip()
     if body:
         Comment.objects.create(post=post, author=request.user, body=body)
@@ -109,6 +114,15 @@ def connect(request, username):
 def react(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
 
+    if post.is_repost:
+        return JsonResponse(
+            {
+                "status": "400",
+                "error": "Cannot react to a repost.",
+            },
+            status=400,
+        )
+
     if Reaction.objects.has_liked(user=request.user, post=post):
         Reaction.objects.unlike(user=request.user, post=post)
         action = "Unliked"
@@ -145,6 +159,15 @@ def bookmarks(request):
 def bookmark(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
 
+    if post.is_repost:
+        return JsonResponse(
+            {
+                "status": "400",
+                "error": "Cannot bookmark a repost.",
+            },
+            status=400,
+        )
+
     if Bookmark.objects.has_bookmarked(request.user, post):
         Bookmark.objects.remove_bookmark(request.user, post)
         action = "Bookmark Removed"
@@ -160,6 +183,15 @@ def bookmark(request, post_id):
 @csrf_exempt
 def pin_post(request, post_id):
     post = get_object_or_404(Post, pk=post_id, author=request.user)
+
+    if post.is_repost:
+        return JsonResponse(
+            {
+                "status": "400",
+                "error": "Cannot pin a repost.",
+            },
+            status=400,
+        )
 
     if post.is_pinned:
         post.is_pinned = False
