@@ -148,7 +148,11 @@ class Post(TimeStampedModel):
 
     @property
     def reposts_count(self):
-        return self.reposts.count()
+        return self.reposts.filter(body="").count()
+
+    @property
+    def quotes_count(self):
+        return self.reposts.exclude(body="").count()
 
     @property
     def type(self) -> str:
