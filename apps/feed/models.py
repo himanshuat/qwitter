@@ -114,12 +114,12 @@ class Post(TimeStampedModel):
             if self._creates_loop():
                 raise ValidationError("Post repost/quote chain cannot form a loop.")
 
-        if self.parent.is_repost:
+        if self.parent and self.parent.is_repost:
             raise ValidationError(
                 "Cannot repost or quote a repost. Only posts and quotes can be reposted/quoted."
             )
 
-        if self.is_pinned and self.is_repost:
+        if self.pk and self.is_pinned and self.is_repost:
             raise ValidationError(
                 "Cannot pin a repost. Only posts and quotes can be pinned."
             )
