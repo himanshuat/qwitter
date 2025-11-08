@@ -36,13 +36,13 @@
 		<p class="my-4 fw-medium">{{ profile_user.bio }}</p>
 
 		<div class="py-2 rounded bg-secondary-clr d-flex align-items-center justify-content-evenly">
-			<button class="btn p-0 d-flex flex-column align-items-center justify-content-center" data-bs-toggle="modal"
-				data-bs-target="#followingModal">
+			<button class="btn p-0 d-flex flex-column align-items-center justify-content-center border-0"
+				data-bs-toggle="modal" data-bs-target="#followingModal">
 				<strong class="fs-4">{{ profile_user.following.count }}</strong>
 				<span>Following</span>
 			</button>
-			<button class="btn p-0 d-flex flex-column align-items-center justify-content-center" data-bs-toggle="modal"
-				data-bs-target="#followersModal">
+			<button class="btn p-0 d-flex flex-column align-items-center justify-content-center border-0"
+				data-bs-toggle="modal" data-bs-target="#followersModal">
 				<strong class="fs-4">{{ profile_user.followers.count }}</strong>
 				<span>Followers</span>
 			</button>

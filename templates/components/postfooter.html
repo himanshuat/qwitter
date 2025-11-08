@@ -3,17 +3,17 @@
 
 <div class="post-footer mt-2">
 	<div class="post-actions btn-group w-100">
-		<button data-postid="{{ post.pk }}" class="like btn btn-sm flex-grow-1 rounded-0">
+		<button data-postid="{{ post.pk }}" class="like btn btn-sm flex-grow-1 rounded-0 border-0">
 			{% if user|has_liked:post %}
 			<i class="fa-solid fa-heart liked"></i> {{ post.reactions_count }}
 			{% else %}
 			<i class="fa-regular fa-heart"></i> {{ post.reactions_count }}
 			{% endif %}
 		</button>
-		<a class="quote btn btn-sm flex-grow-1 rounded-0" href="{% url 'feed:quote' post.id %}">
+		<a class="quote btn btn-sm flex-grow-1 rounded-0 border-0" href="{% url 'feed:quote' post.id %}">
 			<i class="hgi hgi-stroke hgi-edit-02 me-1"></i> {{ post.quotes_count }}
 		</a>
-		<button data-postid="{{ post.pk }}" class="repost btn btn-sm flex-grow-1 rounded-0">
+		<button data-postid="{{ post.pk }}" class="repost btn btn-sm flex-grow-1 rounded-0 border-0">
 			{% if user|has_reposted:post %}
 			<i class="fa-solid fa-retweet reposted"></i> {{ post.reposts_count }}
 			{% else %}
@@ -21,10 +21,10 @@
 			{% endif %}
 		</button>
 		<button data-postid="{{ post.pk }}" data-bs-toggle="modal" data-bs-target="#post{{ post.pk }}commentform"
-			class="comment btn btn-sm flex-grow-1 rounded-0">
+			class="comment btn btn-sm flex-grow-1 rounded-0 border-0">
 			<i class="fa-regular fa-message"></i> <span class="ml-1">{{ post.comments_count }}</span>
 		</button>
-		<button data-postid="{{ post.pk }}" class="bookmark btn btn-sm flex-grow-1 rounded-0">
+		<button data-postid="{{ post.pk }}" class="bookmark btn btn-sm flex-grow-1 rounded-0 border-0">
 			{% if user|has_bookmarked:post %}
 			<i class="fa-solid fa-bookmark bookmarked"></i>
 			{% else %}
