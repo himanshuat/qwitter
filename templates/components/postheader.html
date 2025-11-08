@@ -5,7 +5,7 @@
 {% endif %}
 <div class="post-header">
 	<a href="{% url 'accounts:profile' post.author %}">
-		<img class="rounded-circle" src="{{ post.author.image }}" alt="{{ post.author.name }}">
+		<img class="rounded-circle" src="{{ post.author.avatar }}" alt="{{ post.author.name }}">
 	</a>
 
 	<div>
@@ -16,9 +16,11 @@
 		<small>{{ post.created_date | date:"g:i A • M d, Y" }}</small>
 	</div>
 
-	{% if user == post.author %}
+	{% if user == post.author and not hide_actions %}
 	<div class="ms-auto dropstart">
-		<button class="btn btn-sm" data-bs-toggle="dropdown"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+		<button class="btn btn-sm border-0" data-bs-toggle="dropdown">
+			<i class="fa-solid fa-ellipsis-vertical"></i>
+		</button>
 		<ul class="post-actions dropdown-menu">
 			<li>
 				<button data-postid="{{ post.pk }}" class="pin dropdown-item btn btn-sm">
