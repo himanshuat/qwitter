@@ -1,4 +1,7 @@
 export function initPostActions() {
+	const commentForm = document.getElementById('commentForm');
+	const commentPostId = document.getElementById('commentPostId');
+
 	document.querySelectorAll("button.like").forEach(btn => {
 		btn.addEventListener("click", () => {
 			react(btn)
@@ -9,6 +12,14 @@ export function initPostActions() {
 		btn.addEventListener("click", () => {
 			repost(btn)
 		})
+	})
+
+	document.querySelectorAll('.comment').forEach(btn => {
+		btn.addEventListener('click', function () {
+			const postId = btn.dataset.postid;
+			commentPostId.value = postId;
+			commentForm.action = `/feed/posts/${postId}/comment/`;
+		});
 	})
 
 	document.querySelectorAll("button.bookmark").forEach(btn => {
