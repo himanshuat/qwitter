@@ -1,4 +1,5 @@
 {% load static %}
+{% load humanize %}
 
 {% if post.is_pinned %}
 <p class="post-pinned text-accent"><i class="fa-solid fa-thumbtack"></i> Pinned</p>
@@ -13,7 +14,7 @@
 			<strong class="text-primary-emphasis">{{ post.author.name }}</strong>
 			<span class="text-accent">@{{ post.author }}</span>
 		</a>
-		<small>{{ post.created_date | date:"g:i A • M d, Y" }}</small>
+		<small class="text-secondary">{{ post.created_date|naturaltime }}</small>
 	</div>
 
 	{% if user == post.author and not hide_actions %}

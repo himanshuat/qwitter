@@ -1,20 +1,21 @@
 {% load static %}
+{% load humanize %}
 
 <div class="bg-primary-clr p-3 rounded">
 	<div class="comment-header">
 		<a href="{% url 'accounts:profile' comment.author %}">
-			<img class="rounded-circle" src="{{ comment.author.image }}" alt="{{ comment.author.name }}">
+			<img class="rounded-circle" src="{{ comment.author.avatar }}" alt="{{ comment.author.name }}">
 		</a>
 		<div>
 			<a class="d-flex gap-2" href="{% url 'accounts:profile' comment.author %}">
 				<strong class="text-primary-emphasis">{{ comment.author.name }}</strong>
 				<span class="text-accent">@{{ comment.author }}</span>
 			</a>
-			<small>{{ comment.created_date | date:"g:i A - M d, Y" }}</small>
+			<small class="text-secondary">{{ comment.created_date|naturaltime }}</small>
 		</div>
 	</div>
 
 	<span class="d-inline-block my-2 text-secondary">Replying to <a class="text-accent"
 			href="{% url 'accounts:profile' comment.post.author %}">@{{ comment.post.author }}</a></span>
-	<p class="bg-secondary-clr d-block p-3 rounded-2">{{ comment.body }}</p>
+	<p class="bg-secondary-clr d-block p-3 mb-0 rounded-2">{{ comment.body }}</p>
 </div>
