@@ -23,7 +23,7 @@
 				{% if profile_user == user %}
 				<a href="{% url 'accounts:edit_profile' %}"
 					class="btn btn-sm btn-outline-accent rounded-pill px-4 py-1">Edit Profile</a>
-				{% elif user|is_following:profile_user %}
+				{% elif profile_user.is_following %}
 				<button type="button" class="connect btn btn-sm btn-outline-accent rounded-pill px-4 py-1"
 					data-username="{{ profile_user.username }}">Unfollow</button>
 				{% else %}
@@ -38,16 +38,16 @@
 		<div class="py-2 rounded bg-secondary-clr d-flex align-items-center justify-content-evenly">
 			<button class="btn p-0 d-flex flex-column align-items-center justify-content-center border-0"
 				data-bs-toggle="modal" data-bs-target="#followingModal">
-				<strong class="fs-4">{{ profile_user.following.count }}</strong>
+				<strong class="fs-4">{{ profile_user.following_count }}</strong>
 				<span>Following</span>
 			</button>
 			<button class="btn p-0 d-flex flex-column align-items-center justify-content-center border-0"
 				data-bs-toggle="modal" data-bs-target="#followersModal">
-				<strong class="fs-4">{{ profile_user.followers.count }}</strong>
+				<strong class="fs-4">{{ profile_user.followers_count }}</strong>
 				<span>Followers</span>
 			</button>
 			<div class="d-flex flex-column align-items-center justify-content-center">
-				<strong class="fs-4">{{ profile_user.posts.count }}</strong>
+				<strong class="fs-4">{{ profile_user.posts_count }}</strong>
 				<span>Posts</span>
 			</div>
 		</div>

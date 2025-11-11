@@ -93,7 +93,20 @@ def register(request):
 
 
 def profile(request, username):
-    user = get_object_or_404(User, username__iexact=username)
+    current_user = request.user if request.user.is_authenticated else None
+
+    try:
+        user = User.objects.get_profile(username, current_user)
+    except User.DoesNotExist:
+        return render(
+            request,
+            "errors/404.html",
+            {
+                "title": "User Not Found",
+                "message": f"The user @{username} doesn't exist.",
+            },
+            status=404,
+        )
 
     posts = Post.objects.for_user(user).order_by("-is_pinned", "-created_date")
     page_obj = paginate_queryset(request, posts)
