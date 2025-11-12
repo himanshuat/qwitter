@@ -14,8 +14,5 @@
 			<small class="text-secondary">{{ comment.created_date|naturaltime }}</small>
 		</div>
 	</div>
-
-	<span class="d-inline-block my-2 text-secondary">Replying to <a class="text-accent"
-			href="{% url 'accounts:profile' comment.post.author %}">@{{ comment.post.author }}</a></span>
-	<p class="bg-secondary-clr d-block p-3 mb-0 rounded-2">{{ comment.body }}</p>
+	<p class="bg-secondary-clr d-block p-3 mb-0 mt-3 rounded-2">{{ comment.body }}</p>
 </div>

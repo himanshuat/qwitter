@@ -10,5 +10,29 @@
 		<h4 class="text-primary-emphasis mt-3">Comments</h4>
 		{% include 'components/comments.html' %}
 	</div>
+	<div class="modal fade" id="commentModal" tabindex="-1" aria-labelledby="commentModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h3 class="text-primary-emphasis modal-title fs-5" id="commentModalLabel">Add Comment</h3>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<form id="commentForm" method="post">
+						{% csrf_token %}
+						<input type="hidden" id="commentPostId">
+						<div class="form-floating">
+							<textarea class="form-control" placeholder="Write your comment..." name="body" id="body"
+								style="resize: none; height: 150px;" maxlength="280" required></textarea>
+							<label for="body">Write your comment...</label>
+						</div>
+						<div class="mt-4">
+							<button type="submit" class="btn btn-accent w-100">Publish Comment</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
 </section>
 {% endblock %}

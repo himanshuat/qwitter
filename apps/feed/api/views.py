@@ -225,8 +225,4 @@ class CommentViewSet(viewsets.ModelViewSet):
         with related author preloaded for performance.
         """
         post_id = self.kwargs.get("post_id")
-        return (
-            Comment.objects.filter(post_id=post_id)
-            .select_related("author")
-            .order_by("-created_date")
-        )
+        return Comment.objects.for_post(post=post_id)

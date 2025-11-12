@@ -3,10 +3,8 @@ from django.db import models
 
 class CommentQuerySet(models.QuerySet):
     def for_post(self, post):
-        return self.filter(post=post)
-
-    def for_user(self, user):
-        return self.filter(author=user)
+        """Get comments for a post with author details prefetched."""
+        return self.filter(post=post).select_related("author").order_by("-created_date")
 
 
 class CommentManager(models.Manager):
@@ -15,6 +13,3 @@ class CommentManager(models.Manager):
 
     def for_post(self, post):
         return self.get_queryset().for_post(post)
-
-    def for_user(self, user):
-        return self.get_queryset().for_user(user)
