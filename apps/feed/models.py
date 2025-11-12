@@ -4,7 +4,6 @@ from apps.core.models import TimeStampedModel
 from apps.accounts.models import User
 
 from apps.feed.managers.comment import CommentManager
-from apps.feed.managers.follow import FollowManager
 from apps.feed.managers.post import PostManager
 
 
@@ -21,8 +20,6 @@ class Follow(TimeStampedModel):
         on_delete=models.CASCADE,
         help_text="User who is being followed.",
     )
-
-    objects = FollowManager()
 
     class Meta:
         verbose_name = "Follow"

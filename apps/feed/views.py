@@ -174,10 +174,12 @@ def connect(request, username):
             {"status": "400", "response": "You cannot follow yourself."}
         )
 
-    follow, created = Follow.objects.follow(follower=request.user, followed=target_user)
+    follow, created = Follow.objects.get_or_create(
+        follower=request.user, followed=target_user
+    )
 
     if not created:
-        Follow.objects.unfollow(follower=request.user, followed=target_user)
+        follow.delete()
         messages.info(request, f"You have unfollowed @{username}.")
         return JsonResponse({"status": "201", "response": "Unfollowed"})
 
