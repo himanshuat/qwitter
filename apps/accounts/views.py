@@ -108,7 +108,11 @@ def profile(request, username):
             status=404,
         )
 
-    posts = Post.objects.for_user(user).order_by("-is_pinned", "-created_date")
+    posts = (
+        Post.objects.by_user(user)
+        .with_full_details(user=request.user)
+        .order_by("-is_pinned", "-created_date")
+    )
     page_obj = paginate_queryset(request, posts)
 
     return render(

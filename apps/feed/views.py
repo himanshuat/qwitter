@@ -12,27 +12,30 @@ from apps.feed.models import Post, Comment, Reaction, Bookmark, Follow
 
 
 def index(request):
-    posts = Post.objects.all().order_by("-created_date")
+    posts = Post.objects.with_full_details(user=request.user).order_by("-created_date")
     page_obj = paginate_queryset(request, posts)
     return render(request, "feed/index.html", {"posts_page": page_obj})
 
 
+def post(request, post_id):
+    current_user = request.user if request.user.is_authenticated else None
+    post = get_object_or_404(Post.objects.with_full_details(current_user), pk=post_id)
+    comments = Comment.objects.for_post(post)
+    return render(request, "feed/post.html", {"post": post, "comments": comments})
+
+
 @login_required
 def following(request):
-    followed_users = Follow.objects.following(request.user).values_list(
-        "followed", flat=True
-    )
-    posts = (
-        Post.objects.all().filter(author__in=followed_users).order_by("-created_date")
-    )
+    posts = Post.objects.feed_for_user(request.user)
     page_obj = paginate_queryset(request, posts)
     return render(request, "feed/following.html", {"posts_page": page_obj})
 
 
-def post(request, post_id):
-    post = get_object_or_404(Post, pk=post_id)
-    comments = Comment.objects.for_post(post)
-    return render(request, "feed/post.html", {"post": post, "comments": comments})
+@login_required
+def bookmarks(request):
+    posts = Post.objects.bookmarked_by(request.user).with_full_details(request.user)
+    page_obj = paginate_queryset(request, posts)
+    return render(request, "feed/bookmarks.html", {"posts_page": page_obj})
 
 
 @login_required
@@ -214,20 +217,6 @@ def react(request, post_id):
             "postReactionsCount": Reaction.objects.for_post(post).count(),
         }
     )
-
-
-@login_required
-def bookmarks(request):
-    bookmarks = (
-        Bookmark.objects.filter(user=request.user)
-        .select_related("post")
-        .order_by("-created_date")
-    )
-
-    bookmarked_posts = [bookmark.post for bookmark in bookmarks if bookmark.post]
-    page_obj = paginate_queryset(request, bookmarked_posts)
-
-    return render(request, "feed/bookmarks.html", {"posts_page": page_obj})
 
 
 @require_POST

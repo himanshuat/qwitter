@@ -156,22 +156,6 @@ class Post(TimeStampedModel):
         return self.parent is not None and self.body
 
     @property
-    def reactions_count(self):
-        return self.reactions.count()
-
-    @property
-    def comments_count(self):
-        return self.comments.count()
-
-    @property
-    def reposts_count(self):
-        return self.reposts.filter(body="").count()
-
-    @property
-    def quotes_count(self):
-        return self.reposts.exclude(body="").count()
-
-    @property
     def type(self) -> str:
         """
         Return the type of post:

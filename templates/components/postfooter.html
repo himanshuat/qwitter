@@ -4,7 +4,7 @@
 <div class="post-footer mt-2">
 	<div class="post-actions btn-group w-100">
 		<button data-postid="{{ post.pk }}" class="like btn btn-sm flex-grow-1 rounded-0 border-0">
-			{% if user|has_liked:post %}
+			{% if post.is_liked %}
 			<i class="fa-solid fa-heart liked"></i> {{ post.reactions_count }}
 			{% else %}
 			<i class="fa-regular fa-heart"></i> {{ post.reactions_count }}
@@ -14,7 +14,7 @@
 			<i class="hgi hgi-stroke hgi-edit-02 me-1"></i> {{ post.quotes_count }}
 		</a>
 		<button data-postid="{{ post.pk }}" class="repost btn btn-sm flex-grow-1 rounded-0 border-0">
-			{% if user|has_reposted:post %}
+			{% if post.is_reposted %}
 			<i class="fa-solid fa-retweet reposted"></i> {{ post.reposts_count }}
 			{% else %}
 			<i class="fa-solid fa-retweet"></i> {{ post.reposts_count }}
@@ -25,7 +25,7 @@
 			<i class="fa-regular fa-message"></i> <span class="ml-1">{{ post.comments_count }}</span>
 		</button>
 		<button data-postid="{{ post.pk }}" class="bookmark btn btn-sm flex-grow-1 rounded-0 border-0">
-			{% if user|has_bookmarked:post %}
+			{% if post.is_bookmarked %}
 			<i class="fa-solid fa-bookmark bookmarked"></i>
 			{% else %}
 			<i class="fa-regular fa-bookmark"></i>

@@ -12,23 +12,15 @@ class FollowAdmin(admin.ModelAdmin):
 
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
-    list_display = ("id", "author", "short_body", "post_type", "created_date")
+    list_display = ("id", "author", "short_body", "type", "created_date")
     search_fields = ("author__username", "body")
     list_filter = ("is_pinned", "created_date")
-    readonly_fields = ("reactions_count", "comments_count", "reposts_count")
     ordering = ("-created_date",)
 
     def short_body(self, obj):
         return (obj.body[:30] + "...") if obj.body and len(obj.body) > 30 else obj.body
-    short_body.short_description = "Body"
 
-    def post_type(self, obj):
-        if obj.is_quote:
-            return "QUOTE"
-        elif obj.is_repost:
-            return "REPOST"
-        return "ORIGINAL"
-    post_type.short_description = "Type"
+    short_body.short_description = "Body"
 
 
 @admin.register(Comment)
@@ -40,6 +32,7 @@ class CommentAdmin(admin.ModelAdmin):
 
     def short_body(self, obj):
         return (obj.body[:30] + "...") if len(obj.body) > 30 else obj.body
+
     short_body.short_description = "Comment"
 
 
