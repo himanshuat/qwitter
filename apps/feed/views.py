@@ -203,18 +203,19 @@ def react(request, post_id):
             status=400,
         )
 
-    if Reaction.objects.has_liked(user=request.user, post=post):
-        Reaction.objects.unlike(user=request.user, post=post)
+    reaction, created = Reaction.objects.get_or_create(user=request.user, post=post)
+
+    if not created:
+        reaction.delete()
         action = "Unliked"
     else:
-        Reaction.objects.like(user=request.user, post=post)
         action = "Liked"
 
     return JsonResponse(
         {
             "status": "201",
             "action": action,
-            "postReactionsCount": Reaction.objects.for_post(post).count(),
+            "postReactionsCount": post.reactions.count(),
         }
     )
 
@@ -237,11 +238,12 @@ def bookmark(request, post_id):
             status=400,
         )
 
-    if Bookmark.objects.has_bookmarked(request.user, post):
-        Bookmark.objects.remove_bookmark(request.user, post)
+    bookmark, created = Bookmark.objects.get_or_create(user=request.user, post=post)
+
+    if not created:
+        bookmark.delete()
         action = "Bookmark Removed"
     else:
-        Bookmark.objects.add_bookmark(request.user, post)
         action = "Bookmarked"
 
     return JsonResponse({"status": "201", "action": action})

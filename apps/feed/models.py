@@ -3,11 +3,9 @@ from django.db import models
 from apps.core.models import TimeStampedModel
 from apps.accounts.models import User
 
-from apps.feed.managers.bookmark import BookmarkManager
 from apps.feed.managers.comment import CommentManager
 from apps.feed.managers.follow import FollowManager
 from apps.feed.managers.post import PostManager
-from apps.feed.managers.reaction import ReactionManager
 
 
 class Follow(TimeStampedModel):
@@ -227,8 +225,6 @@ class Reaction(TimeStampedModel):
         db_index=True,
     )
 
-    objects = ReactionManager()
-
     class Meta:
         verbose_name = "Reaction"
         verbose_name_plural = "Reactions"
@@ -265,8 +261,6 @@ class Bookmark(TimeStampedModel):
         help_text="Bookmarked post.",
         db_index=True,
     )
-
-    objects = BookmarkManager()
 
     class Meta:
         verbose_name = "Bookmark"
