@@ -9,7 +9,7 @@
 		</a>
 
 		<div class="bg-primary-clr p-3 rounded-2 mt-2">
-			{% include "components/postheader.html" with post=post.parent hide_actions=True %}
+			{% include "components/postheader.html" with post=post.parent hide_actions=True hide_pinned=True %}
 			<a class="post-content bg-secondary-clr mt-3 p-3 rounded-2" href="{% url 'feed:post' post.parent.pk %}">
 				{{ post.parent.body }}
 			</a>

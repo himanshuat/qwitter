@@ -15,7 +15,7 @@
                 <label for="body">Add your thoughts...</label>
             </div>
             <div class="bg-primary-clr p-3 rounded-2 mt-3">
-                {% include "components/postheader.html" with post=parent_post hide_actions=True %}
+                {% include "components/postheader.html" with post=parent_post hide_actions=True hide_pinned=True %}
                 <p class="post-content bg-secondary-clr mt-3 mb-0 p-3 rounded-2">
                     {{ parent_post.body }}
                 </p>

@@ -1,7 +1,7 @@
 {% load static %}
 {% load humanize %}
 
-{% if post.is_pinned %}
+{% if post.is_pinned and not hide_pinned %}
 <p class="post-pinned text-accent"><i class="fa-solid fa-thumbtack"></i> Pinned</p>
 {% endif %}
 <div class="post-header">

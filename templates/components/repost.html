@@ -3,9 +3,9 @@
 <div data-postid="{{ post.pk }}">
 	<p><i class="fa-solid fa-retweet"></i> <small class="ml-1">{{ post.author }} reposted</small></p>
 	{% if post.parent.is_original %}
-	{% include "components/original_post.html" with post=post.parent %}
+	{% include "components/original_post.html" with post=post.parent hide_pinned=True %}
 	{% elif post.parent.is_quote %}
-	{% include "components/quote.html" with post=post.parent %}
+	{% include "components/quote.html" with post=post.parent hide_pinned=True %}
 	{% else %}
 	<p>Something went wrong. Please contact support.</p>
 	{% endif %}
