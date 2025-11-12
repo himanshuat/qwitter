@@ -38,7 +38,7 @@ class UserQuerySet(models.QuerySet):
         from apps.feed.models import Follow
 
         return self.annotate(
-            is_followed_by_user=Exists(
+            is_following=Exists(
                 Follow.objects.filter(follower=current_user, followed=OuterRef("pk"))
             )
         )
