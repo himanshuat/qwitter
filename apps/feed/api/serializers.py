@@ -103,7 +103,7 @@ class CommentSerializer(serializers.ModelSerializer):
     """
 
     author = UserBaseSerializer(read_only=True)
-    post = serializers.IntegerField(source="post.id", read_only=True)
+    post = serializers.IntegerField(source="post_id", read_only=True)
 
     class Meta:
         model = Comment
