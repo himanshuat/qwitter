@@ -37,7 +37,13 @@ class PostSerializer(PostBaseSerializer):
     parent = PostBaseSerializer(read_only=True)
 
     is_liked = serializers.BooleanField(read_only=True)
+    is_reposted = serializers.BooleanField(read_only=True)
     is_bookmarked = serializers.BooleanField(read_only=True)
+
+    reactions_count = serializers.SerializerMethodField()
+    comments_count = serializers.SerializerMethodField()
+    reposts_count = serializers.SerializerMethodField()
+    quotes_count = serializers.SerializerMethodField()
 
     class Meta(PostBaseSerializer.Meta):
         model = Post
@@ -47,7 +53,9 @@ class PostSerializer(PostBaseSerializer):
             "reactions_count",
             "comments_count",
             "reposts_count",
+            "quotes_count",
             "is_liked",
+            "is_reposted",
             "is_bookmarked",
         )
         read_only_fields = PostBaseSerializer.Meta.read_only_fields + (
@@ -56,7 +64,9 @@ class PostSerializer(PostBaseSerializer):
             "reactions_count",
             "comments_count",
             "reposts_count",
+            "quotes_count",
             "is_liked",
+            "is_reposted",
             "is_bookmarked",
         )
 
@@ -73,6 +83,18 @@ class PostSerializer(PostBaseSerializer):
             validated_data["parent"] = parent_post
 
         return super().create(validated_data)
+
+    def get_reactions_count(self, obj):
+        return getattr(obj, "reactions_count", 0)
+
+    def get_comments_count(self, obj):
+        return getattr(obj, "comments_count", 0)
+
+    def get_reposts_count(self, obj):
+        return getattr(obj, "reposts_count", 0)
+
+    def get_quotes_count(self, obj):
+        return getattr(obj, "quotes_count", 0)
 
 
 class CommentSerializer(serializers.ModelSerializer):

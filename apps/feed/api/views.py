@@ -33,32 +33,12 @@ class PostViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         """
-        Optimize post queryset with author and parent prefetching.
-        Annotate with `is_liked` and `is_bookmarked` to avoid N+1 queries.
+        Optimized queryset using PostManager utilities.
+        Includes author, parent, counts, and user interactions
+        for both posts and their parents.
         """
-        queryset = (
-            Post.objects.all()
-            .select_related("author", "parent__author")
-            .prefetch_related("reactions", "bookmarks", "comments")
-        )
-
-        request = self.request
-        if request and request.user.is_authenticated:
-            queryset = queryset.annotate(
-                is_liked=Exists(
-                    Reaction.objects.filter(user=request.user, post=OuterRef("id"))
-                ),
-                is_bookmarked=Exists(
-                    Bookmark.objects.filter(user=request.user, post=OuterRef("id"))
-                ),
-            )
-        else:
-            queryset = queryset.annotate(
-                is_liked=Value(False, output_field=BooleanField()),
-                is_bookmarked=Value(False, output_field=BooleanField()),
-            )
-
-        return queryset
+        user = self.request.user if self.request.user.is_authenticated else None
+        return Post.objects.with_full_details(user).order_by("-created_date")
 
     @action(
         detail=True,
