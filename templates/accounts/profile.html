@@ -52,7 +52,7 @@
 			</div>
 		</div>
 
-		<!-- Following Model -->
+		<!-- Following Modal -->
 		<div class="modal fade" id="followingModal" tabindex="-1" aria-labelledby="followingModalLabel"
 			aria-hidden="true">
 			<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
@@ -62,10 +62,8 @@
 						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 					</div>
 					<div class="modal-body bg-secondary-clr d-flex flex-column gap-2">
-						{% with following_users=profile_user.following.all %}
-						{% if following_users %}
-						{% for follow in following_users %}
-						{% with person=follow.followed %}
+						{% if following_list %}
+						{% for person in following_list %}
 						<a href="{% url 'accounts:profile' person.username %}">
 							<div class="connection bg-primary-clr d-flex align-items-center gap-2 p-3 rounded-2">
 								<img class="rounded-circle" src="{{ person.avatar }}" alt="{{ person.name }}">
@@ -75,19 +73,17 @@
 								</div>
 							</div>
 						</a>
-						{% endwith %}
 						{% endfor %}
 						{% else %}
-						<h4 class="text-primary-emphasis">{{ profile_user.username }} is not following anyone yet</h4>
+						<h4 class="text-primary-emphasis">{{ profile_user.username }} isn't following anyone yet.</h4>
 						{% endif %}
-						{% endwith %}
 					</div>
 
 				</div>
 			</div>
 		</div>
 
-		<!-- Followers Model -->
+		<!-- Followers Modal -->
 		<div class="modal fade" id="followersModal" tabindex="-1" aria-labelledby="followersModalLabel"
 			aria-hidden="true">
 			<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
@@ -97,10 +93,8 @@
 						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 					</div>
 					<div class="modal-body bg-secondary-clr d-flex flex-column gap-2">
-						{% with followers_list=profile_user.followers.all %}
 						{% if followers_list %}
-						{% for follow in followers_list %}
-						{% with person=follow.follower %}
+						{% for person in followers_list %}
 						<a href="{% url 'accounts:profile' person.username %}">
 							<div class="connection bg-primary-clr d-flex align-items-center gap-2 p-3 rounded-2">
 								<img class="rounded-circle" src="{{ person.avatar }}" alt="{{ person.name }}">
@@ -110,14 +104,13 @@
 								</div>
 							</div>
 						</a>
-						{% endwith %}
 						{% endfor %}
 						{% else %}
-						<h4 class="text-primary-emphasis">{{ profile_user.username }} has no followers yet</h4>
+						<h4 class="text-primary-emphasis">
+							{{ profile_user.username }} doesn't have any followers yet.
+						</h4>
 						{% endif %}
-						{% endwith %}
 					</div>
-
 				</div>
 			</div>
 		</div>

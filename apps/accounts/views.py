@@ -121,6 +121,12 @@ def profile(request, username):
         {
             "profile_user": user,
             "posts_page": page_obj,
+            "following_list": User.objects.filter(followers__follower=user).order_by(
+                "-followers__created_date"
+            ),
+            "followers_list": User.objects.filter(following__followed=user).order_by(
+                "-following__created_date"
+            ),
         },
     )
 
