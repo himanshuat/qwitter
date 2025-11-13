@@ -25,12 +25,12 @@ class UserQuerySet(models.QuerySet):
             posts_count=Count("posts", distinct=True),
         )
 
-    def with_follow_status(self, current_user):
+    def with_follow_status(self, user):
         """
-        Annotate whether current_user is following each user in queryset.
+        Annotate whether user is following each user in queryset.
         Returns: is_following (bool)
         """
-        if not current_user or not current_user.is_authenticated:
+        if not user or not user.is_authenticated:
             return self.annotate(
                 is_following=models.Value(False, output_field=models.BooleanField())
             )
@@ -39,8 +39,24 @@ class UserQuerySet(models.QuerySet):
 
         return self.annotate(
             is_following=Exists(
-                Follow.objects.filter(follower=current_user, followed=OuterRef("pk"))
+                Follow.objects.filter(follower=user, followed=OuterRef("pk"))
             )
+        )
+
+    def following_of(self, user):
+        """Get users that the given user is following, ordered by follow date."""
+        return (
+            self.filter(following__followed=user)
+            .only("username", "name", "image")
+            .order_by("-following__created_date")
+        )
+
+    def followers_of(self, user):
+        """Get users who are following the given user, ordered by follow date."""
+        return (
+            self.filter(followers__follower=user)
+            .only("username", "name", "image")
+            .order_by("-followers__created_date")
         )
 
     def active(self):
@@ -77,8 +93,14 @@ class UserManager(BaseUserManager):
     def with_all_counts(self):
         return self.get_queryset().with_all_counts()
 
-    def with_follow_status(self, current_user):
-        return self.get_queryset().with_follow_status(current_user)
+    def with_follow_status(self, user):
+        return self.get_queryset().with_follow_status(user)
+
+    def following_of(self, user):
+        return self.get_queryset().following_of(user)
+
+    def followers_of(self, user):
+        return self.get_queryset().followers_of(user)
 
     def active(self):
         return self.get_queryset().active()
@@ -90,7 +112,7 @@ class UserManager(BaseUserManager):
         """
         return self.get_queryset().search(query).with_all_counts()
 
-    def get_profile(self, username, current_user=None):
+    def get_profile(self, username, user=None):
         """
         Optimized query for profile page.
         Returns user with counts and follow status.
@@ -108,11 +130,11 @@ class UserManager(BaseUserManager):
             )
             .with_all_counts()
         )
-        if current_user:
-            qs = qs.with_follow_status(current_user)
+        if user:
+            qs = qs.with_follow_status(user)
         return qs.get(username__iexact=username)
 
-    def suggested_users(self, current_user, limit=5):
+    def suggested_users(self, user, limit=5):
         """
         Get suggested users to follow.
         Excludes: current user, users already followed, inactive users.
@@ -120,14 +142,14 @@ class UserManager(BaseUserManager):
         """
         from apps.feed.models import Follow
 
-        following_ids = Follow.objects.filter(follower=current_user).values_list(
+        following_ids = Follow.objects.filter(follower=user).values_list(
             "followed", flat=True
         )
 
         return (
             self.get_queryset()
             .active()
-            .exclude(pk=current_user.pk)
+            .exclude(pk=user.pk)
             .exclude(pk__in=following_ids)
             .with_follow_counts()
             .order_by("-followers_count")[:limit]

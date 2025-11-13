@@ -26,10 +26,10 @@ class UserDetailSerializer(UserBaseSerializer):
     Includes profile info, stats, and relationship metadata.
     """
 
-    is_following = serializers.SerializerMethodField()
-    following_count = serializers.IntegerField(source="following.count", read_only=True)
-    followers_count = serializers.IntegerField(source="followers.count", read_only=True)
-    posts_count = serializers.IntegerField(source="posts.count", read_only=True)
+    is_following = serializers.BooleanField(read_only=True)
+    following_count = serializers.IntegerField(read_only=True)
+    followers_count = serializers.IntegerField(read_only=True)
+    posts_count = serializers.IntegerField(read_only=True)
 
     class Meta(UserBaseSerializer.Meta):
         model = User
@@ -44,14 +44,6 @@ class UserDetailSerializer(UserBaseSerializer):
             "followers_count",
             "posts_count",
         )
-
-    def get_is_following(self, obj):
-        """Return True if the authenticated user follows this user."""
-        
-        request = self.context.get("request")
-        if not request or not request.user.is_authenticated:
-            return False
-        return obj.followers.filter(follower=request.user).exists()
 
 
 class UserUpdateSerializer(serializers.ModelSerializer):
@@ -89,7 +81,9 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 
     def validate_username(self, value):
         if User.objects.filter(username__iexact=value).exists():
-            raise serializers.ValidationError("A user with this username already exists.")
+            raise serializers.ValidationError(
+                "A user with this username already exists."
+            )
         return value.lower()
 
     def validate_email(self, value):
@@ -179,7 +173,9 @@ class ChangeUsernameSerializer(serializers.Serializer):
         if not user.check_password(data["password"]):
             raise serializers.ValidationError({"password": "Incorrect password."})
         if User.objects.filter(username__iexact=data["new_username"]).exists():
-            raise serializers.ValidationError({"new_username": "Username already taken."})
+            raise serializers.ValidationError(
+                {"new_username": "Username already taken."}
+            )
         return data
 
     def save(self):

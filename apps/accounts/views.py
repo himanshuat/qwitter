@@ -120,13 +120,9 @@ def profile(request, username):
         "accounts/profile.html",
         {
             "profile_user": user,
+            "following_list": User.objects.following_of(user),
+            "followers_list": User.objects.followers_of(user),
             "posts_page": page_obj,
-            "following_list": User.objects.filter(followers__follower=user).order_by(
-                "-followers__created_date"
-            ),
-            "followers_list": User.objects.filter(following__followed=user).order_by(
-                "-following__created_date"
-            ),
         },
     )
 

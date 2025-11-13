@@ -36,13 +36,30 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
       - Retrieve followers and following lists
     """
 
-    queryset = User.objects.all()
     serializer_class = UserDetailSerializer
     permission_classes = [AllowAny]
     lookup_field = "username"
 
     filter_backends = [SearchFilter]
     search_fields = ["username", "name"]
+
+    def get_queryset(self):
+        """Return optimized queryset with counts and follow status."""
+        user = self.request.user if self.request.user.is_authenticated else None
+
+        if self.action == "list":
+            query = self.request.query_params.get("search", "")
+            if query:
+                qs = User.objects.search(query)
+            else:
+                qs = User.objects.with_all_counts()
+        else:
+            qs = User.objects.with_all_counts()
+
+        if user:
+            qs = qs.with_follow_status(user)
+
+        return qs
 
     def get_serializer_class(self):
         """Select serializer dynamically based on the action."""
@@ -278,9 +295,7 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
         Retrieve a paginated list of users who follow the specified user.
         """
         user = self.get_object()
-        follower_users = User.objects.filter(following__followed=user).order_by(
-            "-following__created_date"
-        )
+        follower_users = User.objects.followers_of(user)
 
         page = self.paginate_queryset(follower_users)
         serializer = self.get_serializer(page, many=True, context={"request": request})
@@ -298,9 +313,7 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
         Retrieve a paginated list of users that the specified user is following.
         """
         user = self.get_object()
-        following_users = User.objects.filter(followers__follower=user).order_by(
-            "-followers__created_date"
-        )
+        following_users = User.objects.following_of(user)
 
         page = self.paginate_queryset(following_users)
         serializer = self.get_serializer(page, many=True, context={"request": request})
