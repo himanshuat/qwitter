@@ -1,6 +1,9 @@
 from django.db import models
 from django.db.models import Count, Exists, OuterRef, Q, Prefetch
 
+from apps.accounts.models import Follow
+from apps.feed.models import Bookmark, Post, Reaction
+
 
 class PostQuerySet(models.QuerySet):
     def by_user(self, user):
@@ -38,8 +41,6 @@ class PostQuerySet(models.QuerySet):
                 is_reposted=models.Value(False, output_field=models.BooleanField()),
                 is_bookmarked=models.Value(False, output_field=models.BooleanField()),
             )
-
-        from apps.feed.models import Post, Reaction, Bookmark
 
         return self.annotate(
             is_liked=Exists(Reaction.objects.filter(post=OuterRef("pk"), user=user)),
@@ -80,7 +81,6 @@ class PostQuerySet(models.QuerySet):
 
         # Add user interactions if user provided
         if user and user.is_authenticated:
-            from apps.feed.models import Reaction, Bookmark, Post
 
             parent_qs = parent_qs.annotate(
                 is_liked=Exists(
@@ -131,7 +131,6 @@ class PostQuerySet(models.QuerySet):
         Optimized feed query for a specific user's following.
         Use this for the "Following" feed view.
         """
-        from apps.feed.models import Follow
 
         followed_users = Follow.objects.filter(follower=user).values_list(
             "followed", flat=True

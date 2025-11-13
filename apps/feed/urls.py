@@ -17,5 +17,4 @@ urlpatterns = [
     path("posts/<int:post_id>/pin/", views.pin_post, name="pin_post"),
     path("posts/new/", views.new_post, name="new_post"),
     path("bookmarks/", views.bookmarks, name="bookmarks"),
-    path("profile/<str:username>/connect/", views.connect, name="connect"),
 ]

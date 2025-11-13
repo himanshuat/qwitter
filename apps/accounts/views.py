@@ -4,10 +4,13 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
-from django.shortcuts import render, redirect, get_object_or_404
 from django.db import IntegrityError
+from django.http import JsonResponse
+from django.shortcuts import render, redirect, get_object_or_404
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
 
-from .models import User
+from apps.accounts.models import Follow, User
 from apps.feed.models import Post
 from apps.core.utils import paginate_queryset
 
@@ -125,6 +128,37 @@ def profile(request, username):
             "posts_page": page_obj,
         },
     )
+
+
+@require_POST
+@csrf_exempt
+def follow(request, username):
+    """
+    Follow or unfollow a user.
+    """
+    if not request.user.is_authenticated:
+        return JsonResponse(
+            {"status": "401", "response": "Log in to perform this action"}
+        )
+
+    target_user = get_object_or_404(User, username=username)
+    if target_user == request.user:
+        messages.warning(request, "You cannot follow yourself.")
+        return JsonResponse(
+            {"status": "400", "response": "You cannot follow yourself."}
+        )
+
+    follow, created = Follow.objects.get_or_create(
+        follower=request.user, followed=target_user
+    )
+
+    if not created:
+        follow.delete()
+        messages.info(request, f"You have unfollowed @{username}.")
+        return JsonResponse({"status": "201", "response": "Unfollowed"})
+
+    messages.success(request, f"You are now following @{username}.")
+    return JsonResponse({"status": "201", "response": "Followed"})
 
 
 @login_required

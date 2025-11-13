@@ -5,7 +5,8 @@ from rest_framework.filters import SearchFilter
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 
-from apps.feed.models import Post, Comment, Reaction, Bookmark, Follow
+from apps.accounts.models import Follow
+from apps.feed.models import Post, Comment, Reaction, Bookmark
 from apps.core.api.serializers import NoInputSerializer
 from apps.feed.api.serializers import PostSerializer, CommentSerializer
 from apps.core.api.pagination import QwitterPagination

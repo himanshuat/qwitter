@@ -1,53 +1,13 @@
 from django.core.exceptions import ValidationError
 from django.db import models
-from apps.core.models import TimeStampedModel
-from apps.accounts.models import User
 
+from apps.accounts.models import User
+from apps.core.models import ExtendedTimeStampedModel, TimeStampedModel
 from apps.feed.managers.comment import CommentManager
 from apps.feed.managers.post import PostManager
 
 
-class Follow(TimeStampedModel):
-    follower = models.ForeignKey(
-        User,
-        related_name="following",
-        on_delete=models.CASCADE,
-        help_text="User who is following another user.",
-    )
-    followed = models.ForeignKey(
-        User,
-        related_name="followers",
-        on_delete=models.CASCADE,
-        help_text="User who is being followed.",
-    )
-
-    class Meta:
-        verbose_name = "Follow"
-        verbose_name_plural = "Follows"
-        ordering = ["-created_date"]
-        constraints = [
-            models.UniqueConstraint(
-                fields=["follower", "followed"], name="unique_follow"
-            )
-        ]
-        indexes = [
-            models.Index(fields=["follower", "-created_date"]),
-            models.Index(fields=["followed", "-created_date"]),
-        ]
-
-    def __str__(self):
-        return f"@{self.follower} follows @{self.followed}"
-
-    def clean(self):
-        if self.follower == self.followed:
-            raise ValidationError("Users cannot follow themselves.")
-
-    def save(self, *args, **kwargs):
-        self.full_clean()
-        super().save(*args, **kwargs)
-
-
-class Post(TimeStampedModel):
+class Post(ExtendedTimeStampedModel):
     author = models.ForeignKey(
         User,
         related_name="posts",
@@ -165,7 +125,7 @@ class Post(TimeStampedModel):
         return "original"
 
 
-class Comment(TimeStampedModel):
+class Comment(ExtendedTimeStampedModel):
     author = models.ForeignKey(
         User,
         related_name="comments",

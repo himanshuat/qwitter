@@ -1,13 +1,5 @@
 from django.contrib import admin
-from apps.feed.models import Follow, Post, Comment, Reaction, Bookmark
-
-
-@admin.register(Follow)
-class FollowAdmin(admin.ModelAdmin):
-    list_display = ("follower", "followed", "created_date")
-    search_fields = ("follower__username", "followed__username")
-    list_filter = ("created_date",)
-    ordering = ("-created_date",)
+from apps.feed.models import Post, Comment, Reaction, Bookmark
 
 
 @admin.register(Post)

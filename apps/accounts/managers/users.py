@@ -2,6 +2,8 @@ from django.contrib.auth.models import UserManager as BaseUserManager
 from django.db import models
 from django.db.models import Count, Exists, OuterRef
 
+from apps.accounts.models import Follow
+
 
 class UserQuerySet(models.QuerySet):
     def with_follow_counts(self):
@@ -34,8 +36,6 @@ class UserQuerySet(models.QuerySet):
             return self.annotate(
                 is_following=models.Value(False, output_field=models.BooleanField())
             )
-
-        from apps.feed.models import Follow
 
         return self.annotate(
             is_following=Exists(
@@ -140,7 +140,6 @@ class UserManager(BaseUserManager):
         Excludes: current user, users already followed, inactive users.
         Orders by: most followers.
         """
-        from apps.feed.models import Follow
 
         following_ids = Follow.objects.filter(follower=user).values_list(
             "followed", flat=True

@@ -7,7 +7,7 @@ export function initProfileActions() {
 }
 
 function connect(username) {
-	fetch(`/feed/profile/${username}/connect/`, { method: 'POST' })
+	fetch(`/profile/${username}/follow/`, { method: 'POST' })
 		.then(res => res.json())
 		.then(res => {
 			if (res.status === "401") {

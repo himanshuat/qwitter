@@ -5,8 +5,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from apps.accounts.models import User
-from apps.feed.models import Follow
+from apps.accounts.models import Follow, User
 from apps.core.api.pagination import QwitterPagination
 from apps.core.api.permissions import IsSelfOnly
 from apps.core.api.serializers import UserBaseSerializer, NoInputSerializer
