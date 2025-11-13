@@ -2,7 +2,6 @@ from django.db import models
 from django.db.models import Count, Exists, OuterRef, Q, Prefetch
 
 from apps.accounts.models import Follow
-from apps.feed.models import Bookmark, Post, Reaction
 
 
 class PostQuerySet(models.QuerySet):
@@ -42,6 +41,8 @@ class PostQuerySet(models.QuerySet):
                 is_bookmarked=models.Value(False, output_field=models.BooleanField()),
             )
 
+        from apps.feed.models import Bookmark, Post, Reaction
+
         return self.annotate(
             is_liked=Exists(Reaction.objects.filter(post=OuterRef("pk"), user=user)),
             is_bookmarked=Exists(
@@ -78,6 +79,8 @@ class PostQuerySet(models.QuerySet):
                 distinct=True,
             ),
         )
+
+        from apps.feed.models import Bookmark, Post, Reaction
 
         # Add user interactions if user provided
         if user and user.is_authenticated:
