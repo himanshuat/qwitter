@@ -46,17 +46,17 @@ class UserQuerySet(models.QuerySet):
     def following_of(self, user):
         """Get users that the given user is following, ordered by follow date."""
         return (
-            self.filter(following__followed=user)
+            self.filter(followers__follower=user)
             .only("username", "name", "image")
-            .order_by("-following__created_date")
+            .order_by("-followers__created_date")
         )
 
     def followers_of(self, user):
         """Get users who are following the given user, ordered by follow date."""
         return (
-            self.filter(followers__follower=user)
+            self.filter(following__followed=user)
             .only("username", "name", "image")
-            .order_by("-followers__created_date")
+            .order_by("-following__created_date")
         )
 
     def active(self):
