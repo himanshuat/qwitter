@@ -1,0 +1,12 @@
+{% load static %}
+
+<div class="d-flex flex-column gap-2">
+	{% for comment in comments %}
+	{% include "components/comment.html" with comment=comment %}
+	{% empty %}
+	<div class="text-center py-5 text-muted">
+		<i class="fas fa-comments fa-2x mb-3"></i>
+		<p class="mb-0">No comments yet. Be the first to share your thoughts!</p>
+	</div>
+	{% endfor %}
+</div>

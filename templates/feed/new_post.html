@@ -1,0 +1,21 @@
+{% extends "core/base.html" %}
+
+{% block title %}New Post{% endblock %}
+
+{% block body %}
+<section class="container p-4">
+    <h2 class="text-primary-emphasis mb-4">What's on your mind?</h2>
+    <form class="d-block mx-auto" action="{% url 'feed:new_post' %}" method="post">
+        {% csrf_token %}
+        <div class="form-floating border rounded-3">
+            <textarea class="form-control bg-primary-clr border-0 shadow-none" name="body" id="body"
+                style="height: 25vh; resize: none;" maxlength="280" required
+                placeholder="Add your thoughts..."></textarea>
+            <label for="body">Add your thoughts...</label>
+        </div>
+        <div class="mt-4">
+            <button type="submit" class="btn btn-accent w-100">Share</button>
+        </div>
+    </form>
+</section>
+{% endblock %}

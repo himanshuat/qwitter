@@ -1,0 +1,11 @@
+{% load static %}
+
+<div class="post bg-primary-clr p-3 rounded">
+	{% if post.is_original %}
+	{% include "components/original_post.html" %}
+	{% elif post.is_repost %}
+	{% include "components/repost.html" %}
+	{% elif post.is_quote %}
+	{% include "components/quote.html" %}
+	{% endif %}
+</div>

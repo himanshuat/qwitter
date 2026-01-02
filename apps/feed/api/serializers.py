@@ -1,0 +1,130 @@
+from rest_framework import serializers
+from apps.feed.models import Post, Comment
+from apps.core.api.serializers import UserBaseSerializer
+
+
+class PostBaseSerializer(serializers.ModelSerializer):
+    """
+    Base serializer for lightweight post representation.
+    Used in nested relationships like parent posts or quotes.
+    """
+
+    author = UserBaseSerializer(read_only=True)
+
+    class Meta:
+        model = Post
+        fields = (
+            "id",
+            "author",
+            "body",
+            "type",
+            "created_date",
+        )
+        read_only_fields = (
+            "id",
+            "author",
+            "type",
+            "created_date",
+        )
+
+
+class PostSerializer(PostBaseSerializer):
+    """
+    Optimized serializer for detailed post representation, creation, and update.
+    Integrates annotated fields for performance and model-level validation.
+    """
+
+    parent = PostBaseSerializer(read_only=True)
+
+    is_liked = serializers.BooleanField(read_only=True)
+    is_reposted = serializers.BooleanField(read_only=True)
+    is_bookmarked = serializers.BooleanField(read_only=True)
+
+    reactions_count = serializers.SerializerMethodField()
+    comments_count = serializers.SerializerMethodField()
+    reposts_count = serializers.SerializerMethodField()
+    quotes_count = serializers.SerializerMethodField()
+
+    class Meta(PostBaseSerializer.Meta):
+        model = Post
+        fields = PostBaseSerializer.Meta.fields + (
+            "parent",
+            "is_pinned",
+            "reactions_count",
+            "comments_count",
+            "reposts_count",
+            "quotes_count",
+            "is_liked",
+            "is_reposted",
+            "is_bookmarked",
+        )
+        read_only_fields = PostBaseSerializer.Meta.read_only_fields + (
+            "parent",
+            "is_pinned",
+            "reactions_count",
+            "comments_count",
+            "reposts_count",
+            "quotes_count",
+            "is_liked",
+            "is_reposted",
+            "is_bookmarked",
+        )
+
+    def create(self, validated_data):
+        """
+        Create a new post authored by the authenticated user.
+        If the post is a quote or repost, the parent post is inferred from the view context.
+        """
+        request = self.context.get("request")
+        validated_data["author"] = request.user
+
+        parent_post = self.context.get("parent_post")
+        if parent_post:
+            validated_data["parent"] = parent_post
+
+        return super().create(validated_data)
+
+    def get_reactions_count(self, obj):
+        return getattr(obj, "reactions_count", 0)
+
+    def get_comments_count(self, obj):
+        return getattr(obj, "comments_count", 0)
+
+    def get_reposts_count(self, obj):
+        return getattr(obj, "reposts_count", 0)
+
+    def get_quotes_count(self, obj):
+        return getattr(obj, "quotes_count", 0)
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    """
+    Serializer for creating and representing comments on posts.
+    """
+
+    author = UserBaseSerializer(read_only=True)
+    post = serializers.IntegerField(source="post_id", read_only=True)
+
+    class Meta:
+        model = Comment
+        fields = (
+            "id",
+            "author",
+            "post",
+            "body",
+            "created_date",
+        )
+        read_only_fields = ("id", "author", "post", "created_date")
+
+    def create(self, validated_data):
+        """
+        Automatically assign the authenticated user and associated post.
+        The post is inferred from the view's context (nested route).
+        """
+        request = self.context.get("request")
+        view = self.context.get("view")
+        post_id = view.kwargs.get("post_id")
+
+        validated_data["author"] = request.user
+        validated_data["post_id"] = post_id
+        return super().create(validated_data)

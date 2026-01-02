@@ -1,0 +1,49 @@
+{% load static %}
+
+{% if messages %}
+<div class="toast-container position-fixed top-0 start-50 translate-middle-x p-3" style="z-index: 1055;">
+	{% for message in messages %}
+	{% if message.tags == "success" %}
+	<div class="toast text-bg-success border-0 mb-2" role="alert" aria-live="assertive" aria-atomic="true">
+		<div class="d-flex">
+			<div class="toast-body">
+				<i class="fa-solid fa-check-circle me-2"></i>{{ message }}
+			</div>
+			<button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+				aria-label="Close"></button>
+		</div>
+	</div>
+	{% elif message.tags == "error" %}
+	<div class="toast text-bg-danger border-0 mb-2" role="alert" aria-live="assertive" aria-atomic="true">
+		<div class="d-flex">
+			<div class="toast-body">
+				<i class="fa-solid fa-circle-xmark me-2"></i>{{ message }}
+			</div>
+			<button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+				aria-label="Close"></button>
+		</div>
+	</div>
+	{% elif message.tags == "warning" %}
+	<div class="toast text-bg-warning border-0 mb-2" role="alert" aria-live="assertive" aria-atomic="true">
+		<div class="d-flex">
+			<div class="toast-body">
+				<i class="fa-solid fa-triangle-exclamation me-2"></i>{{ message }}
+			</div>
+			<button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+				aria-label="Close"></button>
+		</div>
+	</div>
+	{% elif message.tags == "info" %}
+	<div class="toast text-bg-info border-0 mb-2" role="alert" aria-live="assertive" aria-atomic="true">
+		<div class="d-flex">
+			<div class="toast-body">
+				<i class="fa-solid fa-circle-info me-2"></i>{{ message }}
+			</div>
+			<button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+				aria-label="Close"></button>
+		</div>
+	</div>
+	{% endif %}
+	{% endfor %}
+</div>
+{% endif %}

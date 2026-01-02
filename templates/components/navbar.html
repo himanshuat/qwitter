@@ -1,0 +1,126 @@
+{% load static %}
+
+<nav class="col-lg-2 col-md-3 col-12 p-0 bg-primary-clr d-none d-md-flex flex-md-column">
+	<h2 class="m-4 d-flex align-items-center gap-2">
+		<a class="text-accent d-flex align-items-center" href="{% url 'feed:index' %}">
+			<img src="{% static 'assets/qwitter-logo.svg' %}" alt="Qwitter Logo" style="height: 32px;">
+			<span class="d-none d-md-inline ms-2">Qwitter</span>
+		</a>
+	</h2>
+
+	<div>
+		<ul class="navbar-nav mx-4">
+			<li class="nav-item {% if request.resolver_match.url_name == 'index' %}active{% endif %}">
+				<a class="nav-link fs-5 d-flex align-items-center gap-2" href="{% url 'feed:index' %}">
+					<i class="hgi hgi-stroke hgi-home-05"></i> Home
+				</a>
+			</li>
+			{% if user.is_staff %}
+			<li class="nav-item">
+				<a class="nav-link fs-5 d-flex align-items-center gap-2" href="{% url 'admin:index' %}" target="_blank">
+					<i class="hgi hgi-stroke hgi-shield-user"></i> Admin
+				</a>
+			</li>
+			{% endif %}
+			{% if user.is_authenticated %}
+			<li class="nav-item {% if request.resolver_match.url_name == 'following' %}active{% endif %}">
+				<a class="nav-link fs-5 d-flex align-items-center gap-2" href="{% url 'feed:following' %}">
+					<i class="hgi hgi-stroke hgi-add-team"></i> Following
+				</a>
+			</li>
+			<li class="nav-item {% if request.resolver_match.url_name == 'bookmarks' %}active{% endif %}">
+				<a class="nav-link fs-5 d-flex align-items-center gap-2" href="{% url 'feed:bookmarks' %}">
+					<i class="hgi hgi-stroke hgi-bookmark-02"></i> Bookmarks
+				</a>
+			</li>
+			<li class="nav-item d-lg-none {% if request.resolver_match.url_name == 'newpost' %}active{% endif %}">
+				<a class="nav-link fs-5 d-flex align-items-center gap-2" href="{% url 'feed:new_post' %}">
+					<i class="hgi hgi-stroke hgi-license-draft"></i> New Post</a>
+			<li class="nav-item {% if request.resolver_match.url_name == 'newpost' %}active{% endif %}">
+				<a class="nav-link fs-5 d-flex align-items-center gap-2" href="{% url 'accounts:settings' %}">
+					<i class="hgi hgi-stroke hgi-settings-01"></i> Settings
+				</a>
+			</li>
+			</li>
+			<li class="nav-item {% if request.resolver_match.url_name == 'logout' %}active{% endif %}">
+				<a class="nav-link fs-5 d-flex align-items-center gap-2" href="{% url 'accounts:logout' %}">
+					<i class="hgi hgi-stroke hgi-logout-01"></i> Log Out
+				</a>
+			</li>
+			{% else %}
+			<li class="nav-item {% if request.resolver_match.url_name == 'newpost' %}active{% endif %}">
+				<a class="nav-link fs-5 d-flex align-items-center gap-2" href="{% url 'accounts:settings' %}">
+					<i class="hgi hgi-stroke hgi-settings-01"></i> Settings
+				</a>
+			</li>
+			<li class="nav-item {% if request.resolver_match.url_name == 'login' %}active{% endif %}">
+				<a class="nav-link fs-5 d-flex align-items-center gap-2" href="{% url 'accounts:login' %}">
+					<i class="hgi hgi-stroke hgi-login-circle-01"></i> Log In
+				</a>
+			</li>
+			<li class="nav-item {% if request.resolver_match.url_name == 'register' %}active{% endif %}">
+				<a class="nav-link fs-5 d-flex align-items-center gap-2" href="{% url 'accounts:register' %}">
+					<i class="hgi hgi-stroke hgi-user-add-01"></i> Register
+				</a>
+			</li>
+			{% endif %}
+		</ul>
+	</div>
+
+	<div class="mt-auto px-4 py-3 border-top">
+		{% if user.is_authenticated %}
+		<a class="text-accent-dark fs-5" href="{% url 'accounts:profile' user %}">
+			<img class="profile-img rounded-circle" src="{{ user.avatar }}" alt="{{ user }}" style="height: 40px;">
+			<strong>{{ user }}</strong>
+		</a>
+		{% else %}
+		<a class="text-accent-dark fs-5" href="{% url 'accounts:login' %}">
+			<i class="fa-regular fa-circle-user"></i> <strong>Guest</strong>
+		</a>
+		{% endif %}
+	</div>
+</nav>
+
+<nav class="bg-primary-clr sticky-top shadow-sm d-flex d-md-none align-items-center gap-3 px-4 py-3">
+	<h2 class="m-0 d-flex align-items-center">
+		<a class="text-accent d-flex align-items-center" href="{% url 'feed:index' %}">
+			<img src="{% static 'assets/qwitter-logo.svg' %}" alt="Qwitter Logo" style="height: 28px;">
+			<span class="d-none d-sm-inline ms-2">Qwitter</span>
+		</a>
+	</h2>
+
+	<div class="ms-auto">
+		{% if user.is_authenticated %}
+		<a class="text-accent-dark fs-5" href="{% url 'accounts:profile' user %}">
+			<img class="profile-img rounded-circle" src="{{ user.avatar }}" alt="{{ user }}" style="height: 30px;">
+			<strong class="fw-medium">{{ user }}</strong>
+		</a>
+		{% else %}
+		<a class="text-accent-dark fs-5" href="{% url 'accounts:login' %}">
+			<i class="fa-regular fa-circle-user"></i> <strong class="fw-medium">Guest</strong>
+		</a>
+		{% endif %}
+	</div>
+	<div class="dropdown">
+		<button class="btn p-0 text-accent" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+			<i class="fa-solid fa-bars fa-lg"></i>
+		</button>
+		<ul class="dropdown-menu">
+			<li><a class="dropdown-item" href="{% url 'feed:index' %}">Home</a></li>
+			{% if user.is_staff %}
+			<li><a class="dropdown-item" href="{% url 'admin:index' %}" target="_blank">Admin</a></li>
+			{% endif %}
+			{% if user.is_authenticated %}
+			<li><a class="dropdown-item" href="{% url 'feed:following' %}">Following</a></li>
+			<li><a class="dropdown-item" href="{% url 'feed:bookmarks' %}">Bookmarks</a></li>
+			<li><a class="dropdown-item" href="{% url 'feed:new_post' %}">New Post</a></li>
+			<li><a class="dropdown-item" href="{% url 'accounts:settings' %}">Settings</a></li>
+			<li><a class="dropdown-item" href="{% url 'accounts:logout' %}">Log Out</a></li>
+			{% else %}
+			<li><a class="dropdown-item" href="{% url 'accounts:settings' %}">Settings</a></li>
+			<li><a class="dropdown-item" href="{% url 'accounts:login' %}">Log In</a></li>
+			<li><a class="dropdown-item" href="{% url 'accounts:register' %}">Register</a></li>
+			{% endif %}
+		</ul>
+	</div>
+</nav>

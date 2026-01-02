@@ -1,30 +1,36 @@
-"""qwitter URL Configuration
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/3.0/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
+from django.conf import settings
 from django.contrib import admin
-from django.urls import include, path, re_path
+from django.urls import include, path
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("", include("network.urls", namespace="network")),
-    path("api/", include("api.urls", namespace="api")),
-    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
-    path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    path("", include("apps.accounts.urls", namespace="accounts")),
+    path("feed/", include("apps.feed.urls", namespace="feed")),
+    path("api/auth/", include("apps.core.api.urls", namespace="auth_api")),
+    path("api/", include("apps.accounts.api.urls", namespace="accounts_api")),
+    path("api/", include("apps.feed.api.urls", namespace="feed_api")),
+    path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
+    path(
+        "api/docs/",
+        SpectacularSwaggerView.as_view(url_name="schema"),
+        name="swagger-ui",
+    ),
 ]
 
 urlpatterns += staticfiles_urlpatterns()
+
+if settings.DEBUG:
+    import debug_toolbar
+
+    urlpatterns += [
+        path("__debug__/", include(debug_toolbar.urls)),
+    ]
+
+
+handler400 = "apps.core.views.error_400_view"
+handler403 = "apps.core.views.error_403_view"
+handler404 = "apps.core.views.error_404_view"
+handler500 = "apps.core.views.error_500_view"

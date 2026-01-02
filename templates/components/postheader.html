@@ -1,0 +1,48 @@
+{% load static %}
+{% load humanize %}
+
+{% if post.is_pinned and not hide_pinned %}
+<p class="post-pinned text-accent"><i class="fa-solid fa-thumbtack"></i> Pinned</p>
+{% endif %}
+<div class="post-header">
+	<a href="{% url 'accounts:profile' post.author %}">
+		<img class="rounded-circle" src="{{ post.author.avatar }}" alt="{{ post.author.name }}">
+	</a>
+
+	<div>
+		<a class="d-flex gap-2" href="{% url 'accounts:profile' post.author %}">
+			<strong class="text-primary-emphasis">{{ post.author.name }}</strong>
+			<span class="text-accent">@{{ post.author }}</span>
+		</a>
+		<small class="text-secondary">{{ post.created_date|naturaltime }}</small>
+	</div>
+
+	{% if user == post.author and not hide_actions %}
+	<div class="ms-auto dropstart">
+		<button class="btn btn-sm border-0" data-bs-toggle="dropdown">
+			<i class="fa-solid fa-ellipsis-vertical"></i>
+		</button>
+		<ul class="post-actions dropdown-menu">
+			<li>
+				<button data-postid="{{ post.pk }}" class="pin dropdown-item btn btn-sm">
+					{% if post.is_pinned %}
+					<i class="fa-solid fa-thumbtack-slash"></i> Unpin from Profile
+					{% else %}
+					<i class="fa-solid fa-thumbtack"></i> Pin to Profile
+					{% endif %}
+				</button>
+			</li>
+			<li>
+				<button data-postid="{{ post.pk }}" class="edit dropdown-item btn btn-sm">
+					<i class="fa-regular fa-pen-to-square"></i> Edit Post
+				</button>
+			</li>
+			<li>
+				<button data-postid="{{ post.pk }}" class="delete dropdown-item btn btn-sm">
+					<i class="fa-solid fa-trash-can"></i> Delete Post
+				</button>
+			</li>
+		</ul>
+	</div>
+	{% endif %}
+</div>

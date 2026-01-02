@@ -1,3 +1,27 @@
+# Django
+*.log
+*.pot
+*.pyc
+__pycache__/
 db.sqlite3
+db.sqlite3-journal
 data.json
-**/__pycache__
+
+# Static files
+/staticfiles/
+/static_cdn/
+
+# Media files
+/media/
+
+# Environment
+.env
+.env.local
+.env.prod
+*.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo

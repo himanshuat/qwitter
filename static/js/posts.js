@@ -1,0 +1,194 @@
+export function initPostActions() {
+	const commentForm = document.getElementById('commentForm');
+	const commentPostId = document.getElementById('commentPostId');
+
+	document.querySelectorAll("button.like").forEach(btn => {
+		btn.addEventListener("click", () => {
+			react(btn)
+		})
+	})
+
+	document.querySelectorAll("button.repost").forEach(btn => {
+		btn.addEventListener("click", () => {
+			repost(btn)
+		})
+	})
+
+	document.querySelectorAll('.comment').forEach(btn => {
+		btn.addEventListener('click', function () {
+			const postId = btn.dataset.postid;
+			commentPostId.value = postId;
+			commentForm.action = `/feed/posts/${postId}/comment/`;
+		});
+	})
+
+	document.querySelectorAll("button.bookmark").forEach(btn => {
+		btn.addEventListener("click", () => {
+			bookmark(btn)
+		})
+	})
+
+	document.querySelectorAll("button.edit").forEach(btn => {
+		btn.addEventListener("click", () => {
+			const postId = btn.dataset.postid;
+			const postEl = document.querySelector(`div.post[data-postid="${postId}"]`);
+			const postContent = postEl.querySelector(".post-content");
+			const postEditForm = postEl.querySelector(".post-edit-form");
+
+			if (postContent.style.display === "none") {
+				postContent.style.display = "block"
+				postEditForm.style.display = "none"
+			}
+			else {
+				postContent.style.display = "none"
+				postEditForm.style.display = "block"
+			}
+		})
+	})
+
+	document.querySelectorAll(".post-edit-form").forEach(form => {
+		form.addEventListener("submit", (e) => {
+			e.preventDefault()
+			editPost(form)
+		})
+	})
+
+	document.querySelectorAll("button.delete").forEach(btn => {
+		btn.addEventListener("click", () => {
+			deletePost(btn)
+		})
+	})
+
+	document.querySelectorAll("button.pin").forEach(btn => {
+		btn.addEventListener("click", () => {
+			pinPost(btn)
+		})
+	})
+}
+
+function react(el) {
+	const postId = parseInt(el.dataset.postid)
+	fetch(`/feed/posts/${postId}/react/`, { method: 'POST' })
+		.then(res => res.json())
+		.then(res => {
+			if (res.status === "401") {
+				window.location.href = window.location.origin + "/login"
+			}
+			else if (res.status === "404") {
+				alert(res.response)
+			}
+			else {
+				if (res.action == "Liked") {
+					el.innerHTML = `<i class="fa-solid fa-heart liked"></i> <span class="ml-1">${res.postReactionsCount}</span>`
+				}
+				else {
+					el.innerHTML = `<i class="fa-regular fa-heart"></i> <span class="ml-1">${res.postReactionsCount}</span>`
+				}
+			}
+		})
+}
+
+function repost(el) {
+	const postId = parseInt(el.dataset.postid)
+	fetch(`/feed/posts/${postId}/repost/`, { method: 'POST' })
+		.then(res => res.json())
+		.then(res => {
+			if (res.status === "401") {
+				window.location.href = window.location.origin + "/login"
+			}
+			else if (res.status === "404") {
+				alert(res.response)
+			}
+			else {
+				window.location.href = window.location.origin + `/feed/posts/${postId}/`
+			}
+		})
+}
+
+function bookmark(el) {
+	const postId = parseInt(el.dataset.postid)
+	fetch(`/feed/posts/${postId}/bookmark/`, { method: 'POST' })
+		.then(res => res.json())
+		.then(res => {
+			if (res.status === "401") {
+				window.location.href = window.location.origin + "/login"
+			}
+			else if (res.status === "404") {
+				alert(res.response)
+			}
+			else {
+				if (res.action == "Bookmarked") {
+					el.innerHTML = `<i class="fa-solid fa-bookmark bookmarked"></i>`
+				}
+				else {
+					el.innerHTML = `<i class="fa-regular fa-bookmark"></i>`
+				}
+			}
+		})
+}
+
+function editPost(form) {
+	const postId = form.dataset.postid
+	const postEl = form.parentElement
+	const body = form.querySelector("textarea").value
+
+	fetch(`/feed/posts/${postId}/edit/`, {
+		method: "POST",
+		body: JSON.stringify({
+			body: body
+		})
+	})
+		.then(res => res.json())
+		.then(data => {
+			if (data.status === "401") {
+				window.location.href = window.location.origin + "/login"
+			}
+			else if (data.status == "201") {
+				postEl.querySelector(".editable-post-body").textContent = data.postContent
+			}
+			else {
+				alert(data.response)
+			}
+		})
+	form.style.display = "none"
+	postEl.querySelector(".post-content").style.display = "block"
+}
+
+function deletePost(btn) {
+	const postId = btn.dataset.postid
+	fetch(`/feed/posts/${postId}/delete/`, { method: "POST" })
+		.then(res => res.json())
+		.then(data => {
+			if (data.status === "401") {
+				window.location.href = window.location.origin + "/login"
+			}
+			else if (data.status == "201") {
+				if (window.location.pathname.startsWith("/posts/")) {
+					window.location.href = window.location.origin
+				}
+				else {
+					location.reload()
+				}
+			}
+			else {
+				alert(data.response)
+			}
+		})
+}
+
+function pinPost(btn) {
+	const postId = btn.dataset.postid
+	fetch(`/feed/posts/${postId}/pin/`, { method: "POST" })
+		.then(res => res.json())
+		.then(data => {
+			if (data.status === "401") {
+				window.location.href = window.location.origin + "/login"
+			}
+			else if (data.status == "201") {
+				window.location.href = window.location.origin + "/profile/" + data.username
+			}
+			else {
+				alert(data.response)
+			}
+		})
+}

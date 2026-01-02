@@ -1,0 +1,126 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block title %} {{ profile_user.name|default:profile_user.username }} {% endblock %}
+
+{% block body %}
+<section class="container p-3">
+	<div class="row p-3 m-0 rounded bg-primary-clr">
+		<img class="col-lg-3 col-md-4 col-8 mx-auto p-2 img-thumbnail profile-img rounded-circle"
+			src="{{ profile_user.avatar }}" alt="{{ profile_user.username }}'s avatar">
+		<div class="col-lg-9 col-md-8 col-12 mt-md-0 mt-3 d-flex flex-column">
+			<h1 class="text-primary-emphasis m-0 fs-2 text-truncate">{{ profile_user.name }}</h1>
+			<p class="text-accent mb-1 fs-5">@{{ profile_user }}</p>
+			<p class="text-muted d-flex flex-md-column justify-content-between gap-1 my-2">
+				{% if profile_user.dob %}
+				<small>
+					<i class="fa-solid fa-cake-candles"></i> Birthday: {{ profile_user.dob|date:"F j, Y" }}
+				</small>
+				{% endif %}
+				<small>
+					<i class="fa-regular fa-calendar-plus"></i> Joined on {{ profile_user.date_joined|date:"F Y" }}
+				</small>
+			</p>
+			<div class="my-2">
+				{% if profile_user == user %}
+				<a href="{% url 'accounts:edit_profile' %}"
+					class="btn btn-sm btn-outline-accent rounded-pill px-4 py-1">Edit Profile</a>
+				{% elif profile_user.is_following %}
+				<button type="button" class="connect btn btn-sm btn-outline-accent rounded-pill px-4 py-1"
+					data-username="{{ profile_user.username }}">Unfollow</button>
+				{% else %}
+				<button type="button" class="connect btn btn-sm btn-accent rounded-pill px-4 py-1"
+					data-username="{{ profile_user.username }}">Follow</button>
+				{% endif %}
+			</div>
+		</div>
+
+		{% if profile_user.bio %}
+		<p class="mt-2 mb-0 fw-medium">{{ profile_user.bio }}</p>
+		{% endif %}
+
+		<div class="py-2 mt-3 rounded bg-secondary-clr d-flex align-items-center justify-content-evenly">
+			<button class="btn p-0 d-flex flex-column align-items-center justify-content-center border-0"
+				data-bs-toggle="modal" data-bs-target="#followingModal">
+				<strong class="fs-4">{{ profile_user.following_count }}</strong>
+				<span>Following</span>
+			</button>
+			<button class="btn p-0 d-flex flex-column align-items-center justify-content-center border-0"
+				data-bs-toggle="modal" data-bs-target="#followersModal">
+				<strong class="fs-4">{{ profile_user.followers_count }}</strong>
+				<span>Followers</span>
+			</button>
+			<div class="d-flex flex-column align-items-center justify-content-center">
+				<strong class="fs-4">{{ profile_user.posts_count }}</strong>
+				<span>Posts</span>
+			</div>
+		</div>
+
+		<!-- Following Modal -->
+		<div class="modal fade" id="followingModal" tabindex="-1" aria-labelledby="followingModalLabel"
+			aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="text-primary-emphasis modal-title" id="followingModalLabel">Following</h4>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body bg-secondary-clr d-flex flex-column gap-2">
+						{% if following_list %}
+						{% for person in following_list %}
+						<a href="{% url 'accounts:profile' person.username %}">
+							<div class="connection bg-primary-clr d-flex align-items-center gap-2 p-3 rounded-2">
+								<img class="rounded-circle" src="{{ person.avatar }}" alt="{{ person.name }}">
+								<div class="d-flex flex-column gap-1">
+									<h6 class="text-primary-emphasis m-0">{{ person.name }}</h6>
+									<span class="text-muted">@{{ person.username }}</span>
+								</div>
+							</div>
+						</a>
+						{% endfor %}
+						{% else %}
+						<h4 class="text-primary-emphasis">{{ profile_user.username }} isn't following anyone yet.</h4>
+						{% endif %}
+					</div>
+
+				</div>
+			</div>
+		</div>
+
+		<!-- Followers Modal -->
+		<div class="modal fade" id="followersModal" tabindex="-1" aria-labelledby="followersModalLabel"
+			aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="text-primary-emphasis modal-title" id="followersModalLabel">Followers</h4>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body bg-secondary-clr d-flex flex-column gap-2">
+						{% if followers_list %}
+						{% for person in followers_list %}
+						<a href="{% url 'accounts:profile' person.username %}">
+							<div class="connection bg-primary-clr d-flex align-items-center gap-2 p-3 rounded-2">
+								<img class="rounded-circle" src="{{ person.avatar }}" alt="{{ person.name }}">
+								<div class="d-flex flex-column gap-1">
+									<h6 class="text-primary-emphasis m-0">{{ person.name }}</h6>
+									<span class="text-accent">@{{ person.username }}</span>
+								</div>
+							</div>
+						</a>
+						{% endfor %}
+						{% else %}
+						<h4 class="text-primary-emphasis">
+							{{ profile_user.username }} doesn't have any followers yet.
+						</h4>
+						{% endif %}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<h3 class="text-primary-emphasis mt-3">Posts</h3>
+	{% include 'components/posts.html' %}
+</section>
+{% endblock %}
