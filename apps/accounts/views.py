@@ -40,7 +40,7 @@ def login_view(request):
         return redirect(settings.LOGIN_REDIRECT_URL)
     else:
         messages.error(request, "Invalid username or password.")
-        return redirect(settings.LOGIN_REDIRECT_URL)
+        return redirect(settings.LOGIN_URL)
 
 
 def logout_view(request):
