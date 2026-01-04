@@ -1,6 +1,9 @@
-# Qwitter
+<div align="center">
+  <h1><img src="static/assets/qwitter-brand.svg" alt="Qwitter Brand" width="360"></h1>
+  <p><strong>A Modern Twitter (X)-Inspired Social Platform</strong></p>
+</div>
 
-**A Modern Twitter (X)-Inspired Social Platform**
+<br>
 
 Qwitter is a thoughtfully engineered social networking platform inspired by Twitter (X), where users can share short text posts, interact through reposts and quotes, follow others, manage bookmarks, and personalize their experience with themes and settings.
 
