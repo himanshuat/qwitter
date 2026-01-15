@@ -19,6 +19,15 @@ from apps.accounts.api.serializers import (
     ChangeUsernameSerializer,
     UserDeactivateSerializer,
 )
+from apps.core.api.throttles import (
+    AuthRegisterThrottle,
+    ProfileEditThrottle,
+    UsernameChangeThrottle,
+    EmailChangeThrottle,
+    PasswordChangeThrottle,
+    AccountDeactivateThrottle,
+    FollowActionThrottle,
+)
 
 
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
@@ -79,6 +88,25 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
         }
 
         return serializer_map.get(self.action, super().get_serializer_class())
+
+    def get_throttles(self):
+        """
+        Apply action-specific throttles to sensitive operations.
+        GET endpoints use global throttle only.
+        """
+        throttle_map = {
+            "register": [AuthRegisterThrottle()],
+            "edit": [ProfileEditThrottle()],
+            "change_username": [UsernameChangeThrottle()],
+            "change_email": [EmailChangeThrottle()],
+            "change_password": [PasswordChangeThrottle()],
+            "deactivate": [AccountDeactivateThrottle()],
+            "follow": [FollowActionThrottle()],
+        }
+        
+        if self.action in throttle_map:
+            return throttle_map[self.action]
+        return super().get_throttles()
 
     def list(self, request, *args, **kwargs):
         """
