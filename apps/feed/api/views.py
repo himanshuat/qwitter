@@ -12,6 +12,19 @@ from apps.feed.api.serializers import PostSerializer, CommentSerializer
 from apps.core.api.pagination import QwitterPagination
 from apps.core.api.permissions import IsOwnerOrReadOnly
 from apps.feed.api.filters import PostFilter
+from apps.core.api.throttles import (
+    PostCreateThrottle,
+    PostEditThrottle,
+    PostDeleteThrottle,
+    LikeActionThrottle,
+    BookmarkActionThrottle,
+    PinActionThrottle,
+    PostRepostThrottle,
+    PostQuoteThrottle,
+    CommentCreateThrottle,
+    CommentEditThrottle,
+    CommentDeleteThrottle,
+)
 
 
 class PostViewSet(viewsets.ModelViewSet):
@@ -39,6 +52,27 @@ class PostViewSet(viewsets.ModelViewSet):
         """
         user = self.request.user if self.request.user.is_authenticated else None
         return Post.objects.with_full_details(user).order_by("-created_date")
+
+    def get_throttles(self):
+        """
+        Apply action-specific throttles to write operations.
+        GET endpoints use global throttle only.
+        """
+        throttle_map = {
+            "create": [PostCreateThrottle()],
+            "update": [PostEditThrottle()],
+            "partial_update": [PostEditThrottle()],
+            "destroy": [PostDeleteThrottle()],
+            "react": [LikeActionThrottle()],
+            "bookmark": [BookmarkActionThrottle()],
+            "pin": [PinActionThrottle()],
+            "repost": [PostRepostThrottle()],
+            "quote": [PostQuoteThrottle()],
+        }
+        
+        if self.action in throttle_map:
+            return throttle_map[self.action]
+        return super().get_throttles()
 
     @action(
         detail=True,
@@ -226,3 +260,19 @@ class CommentViewSet(viewsets.ModelViewSet):
         """
         post_id = self.kwargs.get("post_id")
         return Comment.objects.for_post(post=post_id)
+
+    def get_throttles(self):
+        """
+        Apply action-specific throttles to write operations.
+        GET endpoints use global throttle only.
+        """
+        throttle_map = {
+            "create": [CommentCreateThrottle()],
+            "update": [CommentEditThrottle()],
+            "partial_update": [CommentEditThrottle()],
+            "destroy": [CommentDeleteThrottle()],
+        }
+        
+        if self.action in throttle_map:
+            return throttle_map[self.action]
+        return super().get_throttles()

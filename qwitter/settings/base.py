@@ -65,6 +65,14 @@ ASGI_APPLICATION = "qwitter.asgi.application"
 DATABASES = {}
 
 
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "qwitter-throttle",
+    }
+}
+
+
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
@@ -74,6 +82,35 @@ REST_FRAMEWORK = {
         "rest_framework.permissions.IsAuthenticatedOrReadOnly",
     ],
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    "DEFAULT_THROTTLE_CLASSES": [
+        "rest_framework.throttling.AnonRateThrottle",
+        "apps.core.api.throttles.AdminExemptUserRateThrottle",
+    ],
+    "DEFAULT_THROTTLE_RATES": {
+        "anon": "100/hour",
+        "user": "1000/hour",
+        "auth_login": "5/hour",
+        "auth_register": "3/hour",
+        "token_refresh": "100/hour",
+        "token_verify": "200/hour",
+        "password_change": "3/hour",
+        "email_change": "3/hour",
+        "username_change": "3/hour",
+        "account_deactivate": "2/hour",
+        "profile_edit": "10/hour",
+        "post_create": "20/hour",
+        "post_quote": "20/hour",
+        "post_repost": "30/hour",
+        "post_edit": "30/hour",
+        "post_delete": "10/hour",
+        "comment_create": "30/hour",
+        "comment_edit": "30/hour",
+        "comment_delete": "10/hour",
+        "follow_action": "30/hour",
+        "like_action": "100/hour",
+        "bookmark_action": "100/hour",
+        "pin_action": "10/hour",
+    },
 }
 
 
