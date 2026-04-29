@@ -7,9 +7,18 @@ from apps.accounts.models import Follow, User
 @admin.register(User)
 class UserAdmin(BaseUserAdmin):
     model = User
-    list_display = ("avatar_tag", "username", "name", "email", "is_active")
+    list_display = (
+        "avatar_tag",
+        "username",
+        "name",
+        "email",
+        "is_active",
+        "date_joined",
+    )
     search_fields = ("username", "email", "name")
     readonly_fields = ("avatar_tag", "last_login", "date_joined")
+
+    ordering = ("-date_joined",)
 
     fieldsets = (
         (_("Credentials"), {"fields": ("username", "password")}),
