@@ -40,10 +40,10 @@ class PostSerializer(PostBaseSerializer):
     is_reposted = serializers.BooleanField(read_only=True)
     is_bookmarked = serializers.BooleanField(read_only=True)
 
-    reactions_count = serializers.SerializerMethodField()
-    comments_count = serializers.SerializerMethodField()
-    reposts_count = serializers.SerializerMethodField()
-    quotes_count = serializers.SerializerMethodField()
+    reactions_count = serializers.IntegerField(read_only=True, default=0)
+    comments_count = serializers.IntegerField(read_only=True, default=0)
+    reposts_count = serializers.IntegerField(read_only=True, default=0)
+    quotes_count = serializers.IntegerField(read_only=True, default=0)
 
     class Meta(PostBaseSerializer.Meta):
         model = Post
@@ -83,19 +83,6 @@ class PostSerializer(PostBaseSerializer):
             validated_data["parent"] = parent_post
 
         return super().create(validated_data)
-
-    def get_reactions_count(self, obj):
-        return getattr(obj, "reactions_count", 0)
-
-    def get_comments_count(self, obj):
-        return getattr(obj, "comments_count", 0)
-
-    def get_reposts_count(self, obj):
-        return getattr(obj, "reposts_count", 0)
-
-    def get_quotes_count(self, obj):
-        return getattr(obj, "quotes_count", 0)
-
 
 class CommentSerializer(serializers.ModelSerializer):
     """
