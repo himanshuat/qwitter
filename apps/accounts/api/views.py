@@ -7,7 +7,6 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from apps.accounts.models import Follow, User
 from apps.core.api.pagination import QwitterPagination
-from apps.core.api.permissions import IsSelfOnly
 from apps.core.api.serializers import UserBaseSerializer, NoInputSerializer
 from apps.accounts.api.serializers import (
     UserListSerializer,
@@ -179,11 +178,12 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
         detail=False,
         methods=["patch"],
         url_path="me/edit",
-        permission_classes=[IsSelfOnly],
+        permission_classes=[IsAuthenticated],
     )
     def edit(self, request):
         """
         Update profile information of the current authenticated user.
+        Self-restricts updates to the requesting authenticated user.
         """
         serializer = self.get_serializer(
             request.user, data=request.data, partial=True, context={"request": request}
@@ -196,11 +196,12 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
         detail=False,
         methods=["post"],
         url_path="me/change-username",
-        permission_classes=[IsSelfOnly],
+        permission_classes=[IsAuthenticated],
     )
     def change_username(self, request):
         """
         Change the current user's username.
+        Self-restricts updates to the requesting authenticated user.
         """
         serializer = self.get_serializer(
             data=request.data, context={"request": request}
@@ -216,11 +217,12 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
         detail=False,
         methods=["post"],
         url_path="me/change-email",
-        permission_classes=[IsSelfOnly],
+        permission_classes=[IsAuthenticated],
     )
     def change_email(self, request):
         """
         Change the current user's email address.
+        Self-restricts updates to the requesting authenticated user.
         """
         serializer = self.get_serializer(
             data=request.data, context={"request": request}
@@ -236,11 +238,12 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
         detail=False,
         methods=["post"],
         url_path="me/change-password",
-        permission_classes=[IsSelfOnly],
+        permission_classes=[IsAuthenticated],
     )
     def change_password(self, request):
         """
         Change the current user's password.
+        Self-restricts updates to the requesting authenticated user.
         """
         serializer = self.get_serializer(
             data=request.data, context={"request": request}
@@ -256,11 +259,12 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
         detail=False,
         methods=["post"],
         url_path="me/deactivate",
-        permission_classes=[IsSelfOnly],
+        permission_classes=[IsAuthenticated],
     )
     def deactivate(self, request):
         """
         Deactivate the current user's account (soft delete).
+        Self-restricts updates to the requesting authenticated user.
         """
         serializer = self.get_serializer(
             data=request.data, context={"request": request}

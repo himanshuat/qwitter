@@ -29,5 +29,3 @@ DEBUG_TOOLBAR_PANELS = [
     "debug_toolbar.panels.templates.TemplatesPanel",
     "debug_toolbar.panels.signals.SignalsPanel",
 ]
-
-CORS_ALLOW_ALL_ORIGINS = True

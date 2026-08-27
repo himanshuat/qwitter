@@ -33,14 +33,15 @@
 					<i class="hgi hgi-stroke hgi-bookmark-02"></i> Bookmarks
 				</a>
 			</li>
-			<li class="nav-item d-lg-none {% if request.resolver_match.url_name == 'newpost' %}active{% endif %}">
+			<li class="nav-item d-lg-none {% if request.resolver_match.url_name == 'new_post' %}active{% endif %}">
 				<a class="nav-link fs-5 d-flex align-items-center gap-2" href="{% url 'feed:new_post' %}">
-					<i class="hgi hgi-stroke hgi-license-draft"></i> New Post</a>
-			<li class="nav-item {% if request.resolver_match.url_name == 'newpost' %}active{% endif %}">
+					<i class="hgi hgi-stroke hgi-license-draft"></i> New Post
+				</a>
+			</li>
+			<li class="nav-item {% if request.resolver_match.url_name == 'settings' %}active{% endif %}">
 				<a class="nav-link fs-5 d-flex align-items-center gap-2" href="{% url 'accounts:settings' %}">
 					<i class="hgi hgi-stroke hgi-settings-01"></i> Settings
 				</a>
-			</li>
 			</li>
 			<li class="nav-item {% if request.resolver_match.url_name == 'logout' %}active{% endif %}">
 				<a class="nav-link fs-5 d-flex align-items-center gap-2" href="{% url 'accounts:logout' %}">
@@ -48,7 +49,7 @@
 				</a>
 			</li>
 			{% else %}
-			<li class="nav-item {% if request.resolver_match.url_name == 'newpost' %}active{% endif %}">
+			<li class="nav-item {% if request.resolver_match.url_name == 'settings' %}active{% endif %}">
 				<a class="nav-link fs-5 d-flex align-items-center gap-2" href="{% url 'accounts:settings' %}">
 					<i class="hgi hgi-stroke hgi-settings-01"></i> Settings
 				</a>
