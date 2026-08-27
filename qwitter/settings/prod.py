@@ -27,7 +27,3 @@ SECURE_HSTS_PRELOAD = True
 
 MIDDLEWARE.insert(1, "whitenoise.middleware.WhiteNoiseMiddleware")
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
-
-CORS_ALLOWED_ORIGINS = [
-    "https://qwitter.onrender.com",
-]
