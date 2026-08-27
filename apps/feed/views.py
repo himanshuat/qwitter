@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
-from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 import json
@@ -51,7 +50,6 @@ def new_post(request):
 
 
 @require_POST
-@csrf_exempt
 def repost(request, post_id):
     """Create a pure repost (no body)."""
 
@@ -113,7 +111,6 @@ def quote(request, post_id):
 
 
 @require_POST
-@csrf_exempt
 def edit_post(request, post_id):
     if not request.user.is_authenticated:
         return JsonResponse(
@@ -128,7 +125,6 @@ def edit_post(request, post_id):
 
 
 @require_POST
-@csrf_exempt
 def delete_post(request, post_id):
     if not request.user.is_authenticated:
         return JsonResponse(
@@ -156,7 +152,6 @@ def comment(request, post_id):
 
 
 @require_POST
-@csrf_exempt
 def react(request, post_id):
     if not request.user.is_authenticated:
         return JsonResponse(
@@ -191,7 +186,6 @@ def react(request, post_id):
 
 
 @require_POST
-@csrf_exempt
 def bookmark(request, post_id):
     if not request.user.is_authenticated:
         return JsonResponse(
@@ -220,7 +214,6 @@ def bookmark(request, post_id):
 
 
 @require_POST
-@csrf_exempt
 def pin_post(request, post_id):
     if not request.user.is_authenticated:
         return JsonResponse(

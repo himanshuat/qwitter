@@ -68,7 +68,12 @@ export function initPostActions() {
 
 function react(el) {
 	const postId = parseInt(el.dataset.postid)
-	fetch(`/feed/posts/${postId}/react/`, { method: 'POST' })
+	fetch(`/feed/posts/${postId}/react/`, {
+		method: 'POST',
+		headers: {
+			'X-CSRFToken': getCookie('csrftoken')
+		}
+	})
 		.then(res => res.json())
 		.then(res => {
 			if (res.status === "401") {
@@ -90,7 +95,12 @@ function react(el) {
 
 function repost(el) {
 	const postId = parseInt(el.dataset.postid)
-	fetch(`/feed/posts/${postId}/repost/`, { method: 'POST' })
+	fetch(`/feed/posts/${postId}/repost/`, {
+		method: 'POST',
+		headers: {
+			'X-CSRFToken': getCookie('csrftoken')
+		}
+	})
 		.then(res => res.json())
 		.then(res => {
 			if (res.status === "401") {
@@ -107,7 +117,12 @@ function repost(el) {
 
 function bookmark(el) {
 	const postId = parseInt(el.dataset.postid)
-	fetch(`/feed/posts/${postId}/bookmark/`, { method: 'POST' })
+	fetch(`/feed/posts/${postId}/bookmark/`, {
+		method: 'POST',
+		headers: {
+			'X-CSRFToken': getCookie('csrftoken')
+		}
+	})
 		.then(res => res.json())
 		.then(res => {
 			if (res.status === "401") {
@@ -134,6 +149,10 @@ function editPost(form) {
 
 	fetch(`/feed/posts/${postId}/edit/`, {
 		method: "POST",
+		headers: {
+			'Content-Type': 'application/json',
+			'X-CSRFToken': getCookie('csrftoken')
+		},
 		body: JSON.stringify({
 			body: body
 		})
@@ -156,7 +175,12 @@ function editPost(form) {
 
 function deletePost(btn) {
 	const postId = btn.dataset.postid
-	fetch(`/feed/posts/${postId}/delete/`, { method: "POST" })
+	fetch(`/feed/posts/${postId}/delete/`, {
+		method: 'POST',
+		headers: {
+			'X-CSRFToken': getCookie('csrftoken')
+		}
+	})
 		.then(res => res.json())
 		.then(data => {
 			if (data.status === "401") {
@@ -178,7 +202,12 @@ function deletePost(btn) {
 
 function pinPost(btn) {
 	const postId = btn.dataset.postid
-	fetch(`/feed/posts/${postId}/pin/`, { method: "POST" })
+	fetch(`/feed/posts/${postId}/pin/`, {
+		method: 'POST',
+		headers: {
+			'X-CSRFToken': getCookie('csrftoken')
+		}
+	})
 		.then(res => res.json())
 		.then(data => {
 			if (data.status === "401") {
@@ -191,4 +220,19 @@ function pinPost(btn) {
 				alert(data.response)
 			}
 		})
+}
+
+function getCookie(name) {
+	let cookieValue = null;
+	if (document.cookie && document.cookie !== '') {
+		const cookies = document.cookie.split(';');
+		for (let i = 0; i < cookies.length; i++) {
+			const cookie = cookies[i].trim();
+			if (cookie.substring(0, name.length + 1) === (name + '=')) {
+				cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+				break;
+			}
+		}
+	}
+	return cookieValue;
 }

@@ -1,8 +1,10 @@
 from .base import *
 
+import secrets
+
 SECRET_KEY = os.getenv(
     "DJANGO_SECRET_KEY",
-    "django-insecure-q$^hqp@kn3byd%z_#*^492uf$%3t_prrerveqeryh1z(u&piq_",
+    secrets.token_hex(32),
 )
 DEBUG = True
 ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
