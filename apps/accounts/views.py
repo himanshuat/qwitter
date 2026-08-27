@@ -7,7 +7,6 @@ from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
-from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
 from apps.accounts.models import Follow, User
@@ -131,7 +130,6 @@ def profile(request, username):
 
 
 @require_POST
-@csrf_exempt
 def follow(request, username):
     """
     Follow or unfollow a user.

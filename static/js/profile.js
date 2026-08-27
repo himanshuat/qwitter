@@ -1,3 +1,5 @@
+import { getCookie } from "./utils.js";
+
 export function initProfileActions() {
 	document.querySelectorAll("button.connect").forEach(btn => {
 		btn.addEventListener("click", (e) => {
@@ -7,7 +9,12 @@ export function initProfileActions() {
 }
 
 function connect(username) {
-	fetch(`/profile/${username}/follow/`, { method: 'POST' })
+	fetch(`/profile/${username}/follow/`, {
+		method: 'POST',
+		headers: {
+			'X-CSRFToken': getCookie('csrftoken')
+		}
+	})
 		.then(res => res.json())
 		.then(res => {
 			if (res.status === "401") {
