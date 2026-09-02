@@ -15,7 +15,6 @@ class UserListSerializer(UserBaseSerializer):
         model = User
         fields = UserBaseSerializer.Meta.fields + (
             "is_active",
-            "email",
             "date_joined",
             "is_staff",
         )
@@ -25,6 +24,7 @@ class UserDetailSerializer(UserBaseSerializer):
     """
     Serializer for retrieving detailed user profiles.
     Includes profile info, stats, and relationship metadata.
+    Exposes email only to the account owner or staff members.
     """
 
     is_following = serializers.BooleanField(read_only=True)
@@ -45,6 +45,27 @@ class UserDetailSerializer(UserBaseSerializer):
             "followers_count",
             "posts_count",
         )
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        request = self.context.get("request")
+        if request and request.user.is_authenticated:
+            if request.user == instance or request.user.is_staff:
+                data["email"] = instance.email
+        return data
+
+
+class UserMeSerializer(UserDetailSerializer):
+    """
+    Serializer for the authenticated user's own profile (/api/users/me/).
+    Always includes the user's private email address.
+    """
+
+    email = serializers.EmailField(read_only=True)
+
+    class Meta(UserDetailSerializer.Meta):
+        model = User
+        fields = UserDetailSerializer.Meta.fields + ("email",)
 
 
 class UserUpdateSerializer(serializers.ModelSerializer):
