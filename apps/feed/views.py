@@ -74,10 +74,10 @@ def repost(request, post_id):
 
     if not created:
         repost.delete()
-        action = "Reposted"
+        action = "Repost removed"
         messages.success(request, "Repost removed successfully.")
     else:
-        action = "Repost removed"
+        action = "Reposted"
         messages.success(request, "Post reposted successfully.")
 
     return JsonResponse(
