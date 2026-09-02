@@ -136,14 +136,16 @@ def follow(request, username):
     """
     if not request.user.is_authenticated:
         return JsonResponse(
-            {"status": "401", "response": "Log in to perform this action"}
+            {"status": "401", "response": "Log in to perform this action"},
+            status=401,
         )
 
     target_user = get_object_or_404(User, username=username)
     if target_user == request.user:
         messages.warning(request, "You cannot follow yourself.")
         return JsonResponse(
-            {"status": "400", "response": "You cannot follow yourself."}
+            {"status": "400", "response": "You cannot follow yourself."},
+            status=400,
         )
 
     follow, created = Follow.objects.get_or_create(
@@ -153,10 +155,10 @@ def follow(request, username):
     if not created:
         follow.delete()
         messages.info(request, f"You have unfollowed @{username}.")
-        return JsonResponse({"status": "201", "response": "Unfollowed"})
+        return JsonResponse({"status": "200", "response": "Unfollowed"}, status=200)
 
     messages.success(request, f"You are now following @{username}.")
-    return JsonResponse({"status": "201", "response": "Followed"})
+    return JsonResponse({"status": "201", "response": "Followed"}, status=201)
 
 
 @login_required

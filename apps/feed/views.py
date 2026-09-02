@@ -55,7 +55,8 @@ def repost(request, post_id):
 
     if not request.user.is_authenticated:
         return JsonResponse(
-            {"status": "401", "response": "Log in to perform this action"}
+            {"status": "401", "response": "Log in to perform this action"},
+            status=401,
         )
 
     post = get_object_or_404(Post, id=post_id)
@@ -66,6 +67,7 @@ def repost(request, post_id):
                 "status": "400",
                 "error": "Cannot repost a repost. Use the original post.",
             },
+            status=400,
         )
 
     repost, created = Post.objects.get_or_create(
@@ -84,7 +86,8 @@ def repost(request, post_id):
         {
             "status": "201",
             "action": action,
-        }
+        },
+        status=201,
     )
 
 
@@ -114,26 +117,28 @@ def quote(request, post_id):
 def edit_post(request, post_id):
     if not request.user.is_authenticated:
         return JsonResponse(
-            {"status": "401", "response": "Log in to perform this action"}
+            {"status": "401", "response": "Log in to perform this action"},
+            status=401,
         )
 
     post = get_object_or_404(Post, pk=post_id, author=request.user)
     data = json.loads(request.body)
     post.body = data.get("body", "")
     post.save()
-    return JsonResponse({"status": "201", "postContent": post.body})
+    return JsonResponse({"status": "201", "postContent": post.body}, status=200)
 
 
 @require_POST
 def delete_post(request, post_id):
     if not request.user.is_authenticated:
         return JsonResponse(
-            {"status": "401", "response": "Log in to perform this action"}
+            {"status": "401", "response": "Log in to perform this action"},
+            status=401,
         )
 
     post = get_object_or_404(Post, pk=post_id, author=request.user)
     post.delete()
-    return JsonResponse({"status": "201", "action": f"Deleted post: {post_id}"})
+    return JsonResponse({"status": "201", "action": f"Deleted post: {post_id}"}, status=200)
 
 
 @login_required
@@ -155,7 +160,8 @@ def comment(request, post_id):
 def react(request, post_id):
     if not request.user.is_authenticated:
         return JsonResponse(
-            {"status": "401", "response": "Log in to perform this action"}
+            {"status": "401", "response": "Log in to perform this action"},
+            status=401,
         )
 
     post = get_object_or_404(Post, pk=post_id)
@@ -181,7 +187,8 @@ def react(request, post_id):
             "status": "201",
             "action": action,
             "postReactionsCount": post.reactions.count(),
-        }
+        },
+        status=201 if created else 200,
     )
 
 
@@ -189,7 +196,8 @@ def react(request, post_id):
 def bookmark(request, post_id):
     if not request.user.is_authenticated:
         return JsonResponse(
-            {"status": "401", "response": "Log in to perform this action"}
+            {"status": "401", "response": "Log in to perform this action"},
+            status=401,
         )
 
     post = get_object_or_404(Post, pk=post_id)
@@ -210,14 +218,18 @@ def bookmark(request, post_id):
     else:
         action = "Bookmarked"
 
-    return JsonResponse({"status": "201", "action": action})
+    return JsonResponse(
+        {"status": "201", "action": action},
+        status=201 if created else 200,
+    )
 
 
 @require_POST
 def pin_post(request, post_id):
     if not request.user.is_authenticated:
         return JsonResponse(
-            {"status": "401", "response": "Log in to perform this action"}
+            {"status": "401", "response": "Log in to perform this action"},
+            status=401,
         )
 
     post = get_object_or_404(Post, pk=post_id, author=request.user)
@@ -242,5 +254,6 @@ def pin_post(request, post_id):
             "status": "201",
             "post": f"Pinned post: {post_id}",
             "username": post.author.username,
-        }
+        },
+        status=200,
     )
