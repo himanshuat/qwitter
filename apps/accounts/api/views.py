@@ -11,6 +11,7 @@ from apps.core.api.serializers import UserBaseSerializer, NoInputSerializer
 from apps.accounts.api.serializers import (
     UserListSerializer,
     UserDetailSerializer,
+    UserMeSerializer,
     UserUpdateSerializer,
     UserRegisterSerializer,
     ChangePasswordSerializer,
@@ -75,7 +76,7 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
             "list": UserListSerializer,
             "retrieve": UserDetailSerializer,
             "register": UserRegisterSerializer,
-            "me": UserBaseSerializer,
+            "me": UserMeSerializer,
             "edit": UserUpdateSerializer,
             "change_username": ChangeUsernameSerializer,
             "change_email": ChangeEmailSerializer,
